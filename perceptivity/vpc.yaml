@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description:
+  This will be a static setup of a VPC, that will support the perceptivity portal and tableau server.
+
+Resources:
+  BearVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 172.31.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: Default
+      Tags:
+        -Key: "name"
+        Value: "BearVpc"

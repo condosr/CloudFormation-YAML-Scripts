@@ -4,7 +4,15 @@ Description: >-
   This template creates an EC2 instance based on the region and selection of an
   AMI ID. It also will create a Security Group.
 #Parameters section is used to pass values in when creating the stack, for instance the desired subnet the ec2 instance will run on
+
+
 Parameters:
+  EnvType:
+    Description: Environment type.
+    Default: test
+    Type: String
+    AllowedValues: [ prod, dev, test ]
+    ConstraintDescription: must specify prod, dev, or test.
   MySubnet:
     Description: My subnet from my VPC
     Type: String
