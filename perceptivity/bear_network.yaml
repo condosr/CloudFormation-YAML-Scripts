@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation Sample Template VPC_with_PublicIPs_And_DNS: Sample template
+  that creates a VPC with DNS and public IPs enabled. Note that you are billed
+  for the AWS resources that you use when you create a stack from this template.
+Resources:
+  BearVPC:
+    Type: 'AWS::EC2::VPC'
+    Properties:
+      EnableDnsSupport: 'true'
+      EnableDnsHostnames: 'true'
+      CidrBlock: 172.31.0.0/16
+  PortalTableauSubnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref BearVPC
+      CidrBlock: 172.31.16.0/20
+      AvailabilityZone: us-east-1c
+  Alb1Subnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref BearVPC
+      CidrBlock: 172.31.32.0/20
+      AvailabilityZone: us-east-1d
+  Alb2Subnet:
+    Type: 'AWS::EC2::Subnet'
+    Properties:
+      VpcId: !Ref BearVPC
+      CidrBlock: 172.31.48.0/20
+      AvailabilityZone: us-east-1e
+  BearVPCIG:
+    Type: 'AWS::EC2::InternetGateway'
+  BearVPCGatewayAttachment:
+    Type: 'AWS::EC2::VPCGatewayAttachment'
+    Properties:
+      VpcId: !Ref BearVPC
+      InternetGatewayId: !Ref BearVPCIG
+  BearVPCRoutes:
+    Type: 'AWS::EC2::RouteTable'
+    Properties:
+      VpcId: !Ref BearVPC
+  PublicRoute:
+    Type: 'AWS::EC2::Route'
+    DependsOn: BearVPCGatewayAttachment
+    Properties:
+      RouteTableId: !Ref BearVPCRoutes
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref BearVPCIG
+  Alb1SubnetRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref Alb1Subnet
+      RouteTableId: !Ref BearVPCRoutes
+  Alb2SubnetRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref Alb2Subnet
+      RouteTableId: !Ref BearVPCRoutes
+  PortalTableauSubnetRouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
+    Properties:
+      SubnetId: !Ref PortalTableauSubnet
+      RouteTableId: !Ref BearVPCRoutes
+  PortalTableauSubnetNetworkAclAssociation:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      SubnetId: !Ref PortalTableauSubnet
+      NetworkAclId: !GetAtt
+        - BearVPC
+        - DefaultNetworkAcl
+  Alb1SubnetNetworkAclAssociation:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      SubnetId: !Ref Alb1Subnet
+      NetworkAclId: !GetAtt
+        - BearVPC
+        - DefaultNetworkAcl
+  Alb2SubnetNetworkAclAssociation:
+    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    Properties:
+      SubnetId: !Ref Alb2Subnet
+      NetworkAclId: !GetAtt
+        - BearVPC
+        - DefaultNetworkAcl
+  PortalSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable HTTP ingress
+      VpcId: !Ref BearVPC
+      SecurityGroupIngress:
+        - IpProtocol: TCP
+          FromPort: '3389'
+          ToPort: '3389'
+          CidrIp: 174.56.158.129/32
+  TableauSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable HTTP ingress
+      VpcId: !Ref BearVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp #tcp ssh bear cognition office
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 174.56.158.129/32
+Outputs:
+  VPCId:
+    Description: VPC ID
+    Value: !Ref BearVPC
+    Export:
+      Name: !Sub '${AWS::StackName}-VPCID'
+  PortalTableauSubnet:
+    Description: The subnet ID to use for public web servers
+    Value: !Ref PortalTableauSubnet
+    Export:
+      Name: !Sub '${AWS::StackName}-PortalSubnetID'
+  Alb1Subnet:
+    Description: The subnet ID to use for public web servers
+    Value: !Ref Alb1Subnet
+    Export:
+      Name: !Sub '${AWS::StackName}-Alb1SubnetID'
+  Alb2Subnet:
+    Description: The subnet ID to use for public web servers
+    Value: !Ref Alb2Subnet
+    Export:
+      Name: !Sub '${AWS::StackName}-Alb2SubnetID'
+  PortalSecurityGroup:
+    Description: The security group ID to use for public web servers
+    Value: !GetAtt
+      - PortalSecurityGroup
+      - GroupId
+    Export:
+      Name: !Sub '${AWS::StackName}-PortalSecurityGroupID'
+  TableauSecurityGroup:
+    Description: The security group ID to use for public web servers
+    Value: !GetAtt
+      - TableauSecurityGroup
+      - GroupId
+    Export:
+      Name: !Sub '${AWS::StackName}-TableauSecurityGroupID'

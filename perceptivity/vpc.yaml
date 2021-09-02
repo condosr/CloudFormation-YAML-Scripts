@@ -14,3 +14,11 @@ Resources:
       Tags:
         -Key: "name"
         Value: "BearVpc"
+
+Outputs:
+  VpcId:
+    Description: The ID of the VPC
+    Value: !Ref BearVPC
+    Export:
+      Name: !Sub '${AWS::StackName}-VPCID'
+
