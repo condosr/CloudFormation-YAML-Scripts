@@ -10,26 +10,31 @@ Resources:
       EnableDnsSupport: 'true'
       EnableDnsHostnames: 'true'
       CidrBlock: 172.31.0.0/16
+
   PortalTableauSubnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref BearVPC
       CidrBlock: 172.31.16.0/20
       AvailabilityZone: us-east-1c
+
   Alb1Subnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref BearVPC
       CidrBlock: 172.31.32.0/20
       AvailabilityZone: us-east-1d
+
   Alb2Subnet:
     Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref BearVPC
       CidrBlock: 172.31.48.0/20
       AvailabilityZone: us-east-1e
+
   BearVPCIG:
     Type: 'AWS::EC2::InternetGateway'
+
   BearVPCGatewayAttachment:
     Type: 'AWS::EC2::VPCGatewayAttachment'
     Properties:
@@ -39,6 +44,7 @@ Resources:
     Type: 'AWS::EC2::RouteTable'
     Properties:
       VpcId: !Ref BearVPC
+
   PublicRoute:
     Type: 'AWS::EC2::Route'
     DependsOn: BearVPCGatewayAttachment
@@ -86,54 +92,203 @@ Resources:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable HTTP ingress
+      GroupName: PortalServer
       VpcId: !Ref BearVPC
+
       SecurityGroupIngress:
         - IpProtocol: TCP
+          Description: RDP from Bear Cognition Office
           FromPort: '3389'
           ToPort: '3389'
           CidrIp: 174.56.158.129/32
+        - IpProtocol: TCP
+          Description: TSM for Shannon
+          FromPort: '8850'
+          ToPort: '8850'
+          CidrIp: 71.70.216.74/32
+        - IpProtocol: TCP
+          Description: port 80 from public
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: TCP
+          Description: Teknion - Antony Remote
+          FromPort: '3389'
+          ToPort: '3389'
+          CidrIp: 75.35.119.139/32
+        - IpProtocol: TCP
+          Description: Teknion Office
+          FromPort: '3389'
+          ToPort: '3389'
+          CidrIp: 216.215.101.210/32
+        - IpProtocol: TCP
+          Description: RDP from Kayce Remote
+          FromPort: '3389'
+          ToPort: '3389'
+          CidrIp: 207.98.168.34/32
+        - IpProtocol: TCP
+          Description: SQL Server from Tableau Server
+          FromPort: '1433'
+          ToPort: '1433'
+          CidrIp: 18.214.79.188/32
+        - IpProtocol: TCP
+          Description: SQL Server from Tableau internal
+          FromPort: '1433'
+          ToPort: '1433'
+          CidrIp: 172.31.24.73/32
+        - IpProtocol: TCP
+          Description: SQL Server from Bear Cognition Office
+          FromPort: '1433'
+          ToPort: '1433'
+          CidrIp: 174.56.158.129/32
+        - IpProtocol: TCP
+          Description: port 443 from public
+          FromPort: '443'
+          ToPort: '443'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: TCP
+          Description: SQL for Ben Remote
+          FromPort: '1433'
+          ToPort: '1433'
+          CidrIp: 69.73.96.41/32
+        - IpProtocol: TCP
+          Description: SQL from Kayce Remote
+          FromPort: '1433'
+          ToPort: '1433'
+          CidrIp: 207.98.168.34/32
+
   TableauSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable HTTP ingress
+      GroupName: TableauServer
       VpcId: !Ref BearVPC
+
       SecurityGroupIngress:
-        - IpProtocol: tcp #tcp ssh bear cognition office
+        - IpProtocol: tcp
+          Description: tcp ssh bear cognition office
           FromPort: '22'
           ToPort: '22'
           CidrIp: 174.56.158.129/32
+        - IpProtocol: tcp
+          Description: TSM Kayce Remote
+          FromPort: '8850'
+          ToPort: '8850'
+          CidrIp: 207.98.168.34/32
+        - IpProtocol: tcp
+          Description: SSH from Tableau office
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 192.195.4.33/32
+        - IpProtocol: tcp
+          Description: Backup Port when upgrading ubuntu
+          FromPort: '1022'
+          ToPort: '1022'
+          CidrIp: 174.56.158.129/32
+        - IpProtocol: tcp
+          Description: HTTP from portal server
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 52.71.170.75/32
+        - IpProtocol: tcp
+          Description: HTTPS from portal server
+          FromPort: '443'
+          ToPort: '443'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          Description: SSH Kayce Remote
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 207.98.168.34/32
+        - IpProtocol: tcp
+          Description: TSM from Tableau office
+          FromPort: '8850'
+          ToPort: '8850'
+          CidrIp: 192.195.4.33/32
+        - IpProtocol: tcp
+          Description: Postgres Bear Cognition Office
+          FromPort: '8060'
+          ToPort: '8060'
+          CidrIp: 174.56.158.129/32
+        - IpProtocol: tcp
+          Description: HTTP from internal portal IP
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 172.31.27.228/32
+        - IpProtocol: tcp
+          Description: HTTP Kayce Remote
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 207.98.168.34/32
+        - IpProtocol: tcp
+          Description: SMB share Bear Cognition Office
+          FromPort: '445'
+          ToPort: '445'
+          CidrIp: 174.56.158.129/32
+        - IpProtocol: tcp
+          Description: HTTPS Bear Cognition Office
+          FromPort: '443'
+          ToPort: '443'
+          CidrIp: 174.56.158.129/32
+        - IpProtocol: tcp
+          Description: HTTP Bear Cognition Office
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 174.56.158.129/32
+        - IpProtocol: tcp
+          Description: Postgres Kayce Remote
+          FromPort: '8060'
+          ToPort: '8060'
+          CidrIp: 207.98.168.34/32
+        - IpProtocol: tcp
+          Description: TSM Shonnon CBH
+          FromPort: '8850'
+          ToPort: '8850'
+          CidrIp: 71.70.216.74/32
+        - IpProtocol: tcp
+          Description: TSM Bear Cognition Office
+          FromPort: '8850'
+          ToPort: '8850'
+          CidrIp: 174.56.158.129/32
+
 Outputs:
-  VPCId:
+  VPCID:
     Description: VPC ID
     Value: !Ref BearVPC
     Export:
       Name: !Sub '${AWS::StackName}-VPCID'
-  PortalTableauSubnet:
+  PortalTableauSubnetID:
     Description: The subnet ID to use for public web servers
     Value: !Ref PortalTableauSubnet
     Export:
       Name: !Sub '${AWS::StackName}-PortalSubnetID'
-  Alb1Subnet:
+  PortalTablauSubnetAZ:
+    Description: The AZ of the portal tableau subnet
+    Value: !GetAtt PortalTableauSubnet.AvailabilityZone
+    Export:
+      Name: !Sub '${AWS::StackName}-PortalTableauSubnetAZ'
+  Alb1SubnetID:
     Description: The subnet ID to use for public web servers
     Value: !Ref Alb1Subnet
     Export:
       Name: !Sub '${AWS::StackName}-Alb1SubnetID'
-  Alb2Subnet:
+  Alb2SubnetID:
     Description: The subnet ID to use for public web servers
     Value: !Ref Alb2Subnet
     Export:
       Name: !Sub '${AWS::StackName}-Alb2SubnetID'
-  PortalSecurityGroup:
+  PortalSecurityGroupID:
     Description: The security group ID to use for public web servers
     Value: !GetAtt
       - PortalSecurityGroup
       - GroupId
     Export:
       Name: !Sub '${AWS::StackName}-PortalSecurityGroupID'
-  TableauSecurityGroup:
+  TableauSecurityGroupID:
     Description: The security group ID to use for public web servers
     Value: !GetAtt
       - TableauSecurityGroup
       - GroupId
     Export:
       Name: !Sub '${AWS::StackName}-TableauSecurityGroupID'
+
