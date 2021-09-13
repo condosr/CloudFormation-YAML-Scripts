@@ -67,27 +67,27 @@ Resources:
     Properties:
       SubnetId: !Ref PortalTableauSubnet
       RouteTableId: !Ref BearVPCRoutes
-  PortalTableauSubnetNetworkAclAssociation:
-    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-    Properties:
-      SubnetId: !Ref PortalTableauSubnet
-      NetworkAclId: !GetAtt
-        - BearVPC
-        - DefaultNetworkAcl
-  Alb1SubnetNetworkAclAssociation:
-    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-    Properties:
-      SubnetId: !Ref Alb1Subnet
-      NetworkAclId: !GetAtt
-        - BearVPC
-        - DefaultNetworkAcl
-  Alb2SubnetNetworkAclAssociation:
-    Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-    Properties:
-      SubnetId: !Ref Alb2Subnet
-      NetworkAclId: !GetAtt
-        - BearVPC
-        - DefaultNetworkAcl
+  #PortalTableauSubnetNetworkAclAssociation:
+    #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    #Properties:
+      #SubnetId: !Ref PortalTableauSubnet
+      #NetworkAclId: !GetAtt
+        #- BearVPC
+        #- DefaultNetworkAcl
+  #Alb1SubnetNetworkAclAssociation:
+    #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    #Properties:
+      #SubnetId: !Ref Alb1Subnet
+      #NetworkAclId: !GetAtt
+        #- BearVPC
+        #- DefaultNetworkAcl
+  #Alb2SubnetNetworkAclAssociation:
+    #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+    #Properties:
+      #SubnetId: !Ref Alb2Subnet
+      #NetworkAclId: !GetAtt
+        #- BearVPC
+        #- DefaultNetworkAcl
   PortalSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -170,6 +170,11 @@ Resources:
           FromPort: '22'
           ToPort: '22'
           CidrIp: 174.56.158.129/32
+        - IpProtocol: tcp
+          Description: tcp ssh scott home
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 71.68.176.201/32
         - IpProtocol: tcp
           Description: TSM Kayce Remote
           FromPort: '8850'

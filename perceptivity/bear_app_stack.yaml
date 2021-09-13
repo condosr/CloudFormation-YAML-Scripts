@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation Sample Template VPC_with_PublicIPs_And_DNS: Sample template
+  that creates a VPC with DNS and public IPs enabled. Note that you are billed
+  for the AWS resources that you use when you create a stack from this template.
+
+Parameters:
+  networkStackName:
+    Description: This is the network stack that will be passed to make EC2 instances and such
+    Type: String
+    MinLength: 1
+    MaxLength: 30
+    Default: bearNetworkStack
+
+Resources:
+
+  PortalStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/bear_instance_stack.yaml
+      Parameters:
+        amountOfVolumes: 1
+        networkStackName: !Ref networkStackName
+        amiSelection: ami-08e08d7ff2687cede
+        volume1Device: "/dev/sde"
+        volume1ID: "vol-0c762076be4e77cdb"
+
+  #ElasticLoadBalancer:
+    #Instances:
+      #- !Ref PortalStack.
+    #Subnets:
+      #- !ImportValue 'Fn::Sub': '${networkStackName}-PortalSubnetID'
+      #- !ImportValue 'Fn::Sub': '${networkStackName}-Alb1SubnetID'
+      #- !ImportValue 'Fn::Sub': '${networkStackName}-Alb2SubnetID'
+
+
