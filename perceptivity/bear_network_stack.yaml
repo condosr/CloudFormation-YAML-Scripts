@@ -67,27 +67,27 @@ Resources:
     Properties:
       SubnetId: !Ref PortalTableauSubnet
       RouteTableId: !Ref BearVPCRoutes
-  #PortalTableauSubnetNetworkAclAssociation:
-    #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-    #Properties:
-      #SubnetId: !Ref PortalTableauSubnet
-      #NetworkAclId: !GetAtt
+        #PortalTableauSubnetNetworkAclAssociation:
+        #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+        #Properties:
+        #SubnetId: !Ref PortalTableauSubnet
+        #NetworkAclId: !GetAtt
         #- BearVPC
         #- DefaultNetworkAcl
-  #Alb1SubnetNetworkAclAssociation:
-    #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-    #Properties:
-      #SubnetId: !Ref Alb1Subnet
-      #NetworkAclId: !GetAtt
+        #Alb1SubnetNetworkAclAssociation:
+        #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+        #Properties:
+        #SubnetId: !Ref Alb1Subnet
+        #NetworkAclId: !GetAtt
         #- BearVPC
         #- DefaultNetworkAcl
-  #Alb2SubnetNetworkAclAssociation:
-    #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-    #Properties:
-      #SubnetId: !Ref Alb2Subnet
-      #NetworkAclId: !GetAtt
+        #Alb2SubnetNetworkAclAssociation:
+        #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
+        #Properties:
+        #SubnetId: !Ref Alb2Subnet
+        #NetworkAclId: !GetAtt
         #- BearVPC
-        #- DefaultNetworkAcl
+      #- DefaultNetworkAcl
   PortalSecurityGroup:
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
@@ -296,4 +296,3 @@ Outputs:
       - GroupId
     Export:
       Name: !Sub '${AWS::StackName}-TableauSecurityGroupID'
-

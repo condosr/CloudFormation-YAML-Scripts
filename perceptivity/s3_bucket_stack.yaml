@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  This is a template that will be used as a nested stack of S3 buckets.
+Parameters:
+  bucketName:
+    Description: this will be the name of the bucket
+    Type: String
+    MinLength: 1
+    MaxLength: 45
+    AllowedPattern: "[a-z-]+"
+  allPublicAccess:
+    Description: a boolean that states whether your bucket has all public access or not
+    Type: String
+    AllowedValues: [True, False]
+Resources:
+  myS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      #AccelerateConfiguration:
+        #AccelerateConfiguration
+      #AccessControl: String
+      #AnalyticsConfigurations:
+        #- AnalyticsConfiguration
+      #BucketEncryption:
+        #BucketEncryption
+      BucketName: !Ref bucketName
+      #CorsConfiguration:
+        #CorsConfiguration
+      #IntelligentTieringConfigurations:
+        #- IntelligentTieringConfiguration
+      #InventoryConfigurations:
+        #- InventoryConfiguration
+      #LifecycleConfiguration:
+        #LifecycleConfiguration
+      #LoggingConfiguration:
+        #DestinationBucketName: !Ref myS3Bucket
+        #LogFilePrefix: "log-files"
+      #MetricsConfigurations:
+        #- MetricsConfiguration
+      #NotificationConfiguration:
+        #NotificationConfiguration
+      #ObjectLockConfiguration:
+        #ObjectLockConfiguration
+      #ObjectLockEnabled: Boolean
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerPreferred
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: !Ref allPublicAccess
+        BlockPublicPolicy: !Ref allPublicAccess
+        IgnorePublicAcls: !Ref allPublicAccess
+        RestrictPublicBuckets: !Ref allPublicAccess
+      #ReplicationConfiguration: may be useful, keep this in mind
+        #ReplicationConfiguration
+      Tags:
+        - Key: bucketName
+          Value: !Ref bucketName
+      #VersioningConfiguration: Might be good for the cog logs
+        #VersioningConfiguration
+      #WebsiteConfiguration: may be useful for the decision tree, jupyter notebook scenario
+        #WebsiteConfiguration

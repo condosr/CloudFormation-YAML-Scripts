@@ -15,77 +15,90 @@ Parameters:
     #Description: the subnet used for the ec2 instance
     #Type: AWS::EC2::Subnet
     #AllowedValues: [!ImportValue 'Fn::Sub': '${networkStackName}-PortalSubnetID', !ImportValue 'Fn::Sub': '${networkStackName}-Alb1SubnetID', !ImportValue 'Fn::Sub': '${networkStackName}-Alb2SubnetID' ]
-  amountOfVolumes:
-    Description: the amount of volumes you want to attatch
-    Type: Number
-    AllowedValues: [0, 1, 2, 3, 4]
-    Default: 0
+  #amountOfVolumes:
+    #Description: the amount of volumes you want to attatch
+    #Type: Number
+    #AllowedValues: [0, 1, 2, 3, 4]
+    #Default: 0
   amiSelection:
     Description: the ami that will be used
     Type: String
     #MinLength: 1
     #MaxLength: 30
     Default: 'ami-09e67e426f25ce0d7'
-  volume1Device:
-    Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ""
-  volume1ID:
-    Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ""
-  volume2Device:
-    Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ''
-  volume2ID:
-    Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ''
-  volume3Device:
-    Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ''
-  volume3ID:
-    Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ''
-  volume4Device:
-    Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ''
-  volume4ID:
-    Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    Type: String
-    MinLength: 0
-    MaxLength: 30
-    Default: ''
+  #volume1Device:
+    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ''
+  #volume1Device:
+    #!If [
+      #!Or [ oneVolume, twoVolume, threeVolume, fourVolume ],
+      #[
+    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device),
+    #Type: String,
+    #MinLength: 0,
+    #MaxLength: 30,
+    #Default: ""
+  #],
+  #AWS::NoValue
+  #]
+
+  #volume1ID:
+    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ""
+  #volume2Device:
+    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ''
+  #volume2ID:
+    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ''
+  #volume3Device:
+    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ''
+  #volume3ID:
+    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ''
+  #volume4Device:
+    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ''
+  #volume4ID:
+    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
+    #Type: String
+    #MinLength: 0
+    #MaxLength: 30
+    #Default: ''
 
 Conditions:
-  oneVolume: !Equals [!Ref amountOfVolumes, 1]
-  twoVolumes: !Equals [!Ref amountOfVolumes, 2]
-  threeVolumes: !Equals
-    - !Ref amountOfVolumes
-    - 3
-  fourVolumes: !Equals
-    - !Ref amountOfVolumes
-    - 4
-  hasVolumes: !Not [!Equals [!Ref amountOfVolumes, 0]]
-  noVolumes: !Equals [!Ref amountOfVolumes, 0]
+  #oneVolume: !Equals [!Ref amountOfVolumes, 1]
+  #twoVolumes: !Equals [!Ref amountOfVolumes, 2]
+  #threeVolumes: !Equals
+    #- !Ref amountOfVolumes
+    #- 3
+  #fourVolumes: !Equals
+    #- !Ref amountOfVolumes
+    #- 4
+  #hasVolumes: !Not [!Equals [!Ref amountOfVolumes, 0]]
+  #noVolumes: !Equals [!Ref amountOfVolumes, 0]
 
   #storedVolumeName:
     #Type: String
@@ -172,23 +185,25 @@ Resources:
       #Tenancy: String
       #UserData: String to do later
 
-      Volumes:
-        !If [
-            oneVolume,
-          [Device: !Ref volume1Device, VolumeId: !Ref volume1ID],
-          !If [
-              twoVolumes,
-            [ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ] ],
-            !If [
-                threeVolumes,
-                [ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ], [ Device: !Ref volume3Device, VolumeId: !Ref volume3ID ] ],
-                !If [ fourVolumes,
-                [ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ], [ Device: !Ref volume3Device, VolumeId: !Ref volume3ID ], [ Device: !Ref volume4Device, VolumeId: !Ref volume4ID ] ],
-                !Ref AWS::NoValue
-                ]
-            ]
-          ]
-        ]
+      #Volumes:
+        #!If [
+          #oneVolume,
+          #[!And [Device: !Ref volume1Device, VolumeId: !Ref volume1ID]],
+          #Volumes:
+            #- [Device: !Ref volume1Device, VolumeId: !Ref volume1ID],
+          #!If [
+              #twoVolumes,
+            #[ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ] ],
+            #!If [
+                #threeVolumes,
+                #[ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ], [ Device: !Ref volume3Device, VolumeId: !Ref volume3ID ] ],
+                #!If [ fourVolumes,
+                #[ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ], [ Device: !Ref volume3Device, VolumeId: !Ref volume3ID ], [ Device: !Ref volume4Device, VolumeId: !Ref volume4ID ] ],
+                #!Ref AWS::NoValue
+                #]
+            #]
+          #]
+        #]
 
 
   serverNoVolAttatchEIP:
