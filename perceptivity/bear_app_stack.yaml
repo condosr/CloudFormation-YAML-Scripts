@@ -19,11 +19,17 @@ Resources:
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/bear_instance_stack.yaml
       Parameters:
-        amountOfVolumes: 1
         networkStackName: !Ref networkStackName
-        amiSelection: ami-08e08d7ff2687cede
-        volume1Device: "/dev/sde"
-        volume1ID: "vol-0c762076be4e77cdb"
+        #amiSelection:
+
+  CodeBucket:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/s3_bucket_stack.yaml
+      Parameters:
+        bucketName: the-cool-kids-stack
+        allPrivateAccess: true
+
 
   #ElasticLoadBalancer:
     #Instances:

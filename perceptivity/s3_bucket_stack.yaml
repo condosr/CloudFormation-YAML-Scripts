@@ -8,8 +8,8 @@ Parameters:
     MinLength: 1
     MaxLength: 45
     AllowedPattern: "[a-z-]+"
-  allPublicAccess:
-    Description: a boolean that states whether your bucket has all public access or not
+  allPrivateAccess:
+    Description: a boolean that states whether your bucket is public or private
     Type: String
     AllowedValues: [True, False]
 Resources:
@@ -46,10 +46,10 @@ Resources:
         Rules:
           - ObjectOwnership: BucketOwnerPreferred
       PublicAccessBlockConfiguration:
-        BlockPublicAcls: !Ref allPublicAccess
-        BlockPublicPolicy: !Ref allPublicAccess
-        IgnorePublicAcls: !Ref allPublicAccess
-        RestrictPublicBuckets: !Ref allPublicAccess
+        BlockPublicAcls: !Ref allPrivateAccess
+        BlockPublicPolicy: !Ref allPrivateAccess
+        IgnorePublicAcls: !Ref allPrivateAccess
+        RestrictPublicBuckets: !Ref allPrivateAccess
       #ReplicationConfiguration: may be useful, keep this in mind
         #ReplicationConfiguration
       Tags:
@@ -59,3 +59,9 @@ Resources:
         #VersioningConfiguration
       #WebsiteConfiguration: may be useful for the decision tree, jupyter notebook scenario
         #WebsiteConfiguration
+Outputs:
+  bucketLocation:
+    Description: the name of the S3 bucket for reference
+    Value: !Ref myS3Bucket
+    Export:
+      Name: !Sub '${AWS::StackName}-bucketLocation'

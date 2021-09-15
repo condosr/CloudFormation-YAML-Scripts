@@ -88,7 +88,7 @@ Parameters:
     #MaxLength: 30
     #Default: ''
 
-Conditions:
+#Conditions:
   #oneVolume: !Equals [!Ref amountOfVolumes, 1]
   #twoVolumes: !Equals [!Ref amountOfVolumes, 2]
   #threeVolumes: !Equals
