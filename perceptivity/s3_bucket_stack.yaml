@@ -6,7 +6,7 @@ Parameters:
     Description: this will be the name of the bucket
     Type: String
     MinLength: 1
-    MaxLength: 45
+    MaxLength: 255
     AllowedPattern: "[a-z-]+"
   allPrivateAccess:
     Description: a boolean that states whether your bucket is public or private
@@ -15,6 +15,7 @@ Parameters:
 Resources:
   myS3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
     Properties:
       #AccelerateConfiguration:
         #AccelerateConfiguration
@@ -59,9 +60,96 @@ Resources:
         #VersioningConfiguration
       #WebsiteConfiguration: may be useful for the decision tree, jupyter notebook scenario
         #WebsiteConfiguration
+  cloudTrailBucketPolicy:
+
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref myS3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: '1'
+            Effect: Allow
+            Principal:
+              Service: logs.us-east-1.amazonaws.com
+            Action: 's3:GetBucketAcl'
+            Resource: !GetAtt
+              - myS3Bucket
+              - Arn
+          - Sid: '2'
+            Effect: Allow
+            Principal:
+              Service: logs.us-east-1.amazonaws.com
+            Action: 's3:PutObject'
+            #Resource: 'arn:aws:s3:::bear-cognition-logs/*'
+            Resource: !Join
+              - ""
+              - - !GetAtt
+                  - myS3Bucket
+                  - Arn
+                - "/*"
+            Condition:
+              StringEquals:
+                's3:x-amz-acl': bucket-owner-full-control
+          - Sid: AWSLogDeliveryWrite
+            Effect: Allow
+            Principal:
+              Service: delivery.logs.amazonaws.com
+            Action: 's3:PutObject'
+            Resource: !Join
+              - ""
+              - - !GetAtt
+                  - myS3Bucket
+                  - Arn
+                - "/*"
+            Condition:
+              StringEquals:
+                's3:x-amz-acl': bucket-owner-full-control
+          - Sid: AWSLogDeliveryAclCheck
+            Effect: Allow
+            Principal:
+              Service: delivery.logs.amazonaws.com
+            Action: 's3:GetBucketAcl'
+            Resource: !GetAtt
+              - myS3Bucket
+              - Arn
+          - Sid: AWSCloudTrailAclCheck20150319
+            Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: 's3:GetBucketAcl'
+            Resource: !GetAtt
+              - myS3Bucket
+              - Arn
+          - Sid: AWSCloudTrailWrite20150319
+            Effect: Allow
+            Principal:
+              Service: cloudtrail.amazonaws.com
+            Action: 's3:PutObject'
+            Resource: !Join
+              - ""
+              - - !GetAtt
+                  - myS3Bucket
+                  - Arn
+                - "/*"
+            Condition:
+              StringEquals:
+                's3:x-amz-acl': bucket-owner-full-control
+
 Outputs:
   bucketLocation:
     Description: the name of the S3 bucket for reference
     Value: !Ref myS3Bucket
     Export:
       Name: !Sub '${AWS::StackName}-bucketLocation'
+
+  bucketArn:
+    Description: the ARN of the s3 bucket
+    Value: !Join
+      - ''
+      - - !GetAtt
+          - myS3Bucket
+          - Arn
+        - "/"
+    Export:
+      Name: !Sub '${AWS::StackName}-bucketArn'

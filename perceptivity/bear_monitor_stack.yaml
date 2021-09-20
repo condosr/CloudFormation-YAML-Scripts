@@ -3,19 +3,125 @@ Description: >-
   AWS CloudFormation Sample Template VPC_with_PublicIPs_And_DNS: Sample template
   that creates a VPC with DNS and public IPs enabled. Note that you are billed
   for the AWS resources that you use when you create a stack from this template.
+Parameters:
+  bucketStack:
+    Description: The name of the bucket stack
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+  networkStack:
+    Description: The name of the network stack
+    Type: String
+    MinLength: 1
+    MaxLength: 255
+
 
 Resources:
-  cloudTrailMonitoring:
+  cloudTrailRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "s3.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            },
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      Description: the policy that is required for cloudtrail to send logs to an s3 bucket
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+        - "arn:aws:iam::aws:policy/AWSCloudTrailReadOnlyAccess"
+      RoleName: cloudTrailLogRole
+  cloudTrailLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      #KmsKeyId: String
+      LogGroupName: cloudTrailLogGroup
+      #RetentionInDays: Integer
+  flowLogMonitoring:
     Type: AWS::EC2::FlowLog
     Properties:
       #DeliverLogsPermissionArn: String
-      LogDestination: String
-      LogDestinationType: String
-      LogFormat: String
-      LogGroupName: String
-      MaxAggregationInterval: Integer
-      ResourceId: String
-      ResourceType: String
+      LogDestination: !ImportValue
+        'Fn::Sub': '${bucketStack}-bucketArn'
+      LogDestinationType: s3
+      #LogFormat: String
+      #LogGroupName: !Ref portalFlowLogsGroup
+      #MaxAggregationInterval: 60
+      ResourceId: !ImportValue
+        'Fn::Sub': '${networkStack}-PortalSubnetID'
+      ResourceType: Subnet
+      #Tags:
+        #- Key: flowLogName
+          #Value: portalSubnetFlowLogs
+      TrafficType: ALL
+  cloudTrail:
+    Type: AWS::CloudTrail::Trail
+    Properties:
+      CloudWatchLogsLogGroupArn: !GetAtt
+        - cloudTrailLogGroup
+        - Arn
+      CloudWatchLogsRoleArn: !GetAtt
+        - cloudTrailRole
+        - Arn
+      #EnableLogFileValidation: Boolean
+      #EventSelectors:
+        #- EventSelector
+      #IncludeGlobalServiceEvents: Boolean
+      #InsightSelectors:
+        #- InsightSelector
+      IsLogging: true
+      #IsMultiRegionTrail: Boolean
+      #IsOrganizationTrail: Boolean
+      #KMSKeyId: String
+      S3BucketName: !ImportValue
+        'Fn::Sub': '${bucketStack}-bucketLocation'
+
+      #S3KeyPrefix: String
+      #SnsTopicName: String
       Tags:
-        - Tag
-      TrafficType: String
+        - Key: yuh
+          Value: yuhyuh
+      TrailName: bearCogCloudTrail
+  #ec2Alarm:
+    #Type: AWS::CloudWatch::Alarm
+    #Properties:
+      #ActionsEnabled: true
+      #AlarmActions:
+        #- arn:aws:sns:us-east-1:708508995810:test_alarm
+      #AlarmDescription: This alarm indidcates when cpu usage goes above 70%
+      #AlarmName: ExcessiveCpuUsage
+      #ComparisonOperator: GreaterThanOrEqualToThreshold
+      #DatapointsToAlarm: 1
+      #Dimensions:
+        #- Dimension
+      #EvaluateLowSampleCountPercentile: String
+      #EvaluationPeriods: 3
+      #ExtendedStatistic: String
+      #InsufficientDataActions:
+        #- String
+      #MetricName: "CPUUtilization•InstanceId: i-0e8348fe53e3cdde5"
+      #Metrics:
+        #- MetricDataQuery
+      #Namespace: "AWS/EC2"
+      #OKActions:
+        #- String
+      #Period: 60
+      #Statistic: Average
+      #Threshold: 70
+      #ThresholdMetricId: String
+      #TreatMissingData: String
+      #Unit: Percent

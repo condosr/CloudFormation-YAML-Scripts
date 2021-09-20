@@ -288,7 +288,12 @@ Outputs:
       - PortalSecurityGroup
       - GroupId
     Export:
-      Name: !Sub '${AWS::StackName}-PortalSecurityGroupID'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackName}-PortalSecurityGroupID'
+              Operation: Upper
   TableauSecurityGroupID:
     Description: The security group ID to use for public web servers
     Value: !GetAtt

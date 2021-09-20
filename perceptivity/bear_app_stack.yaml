@@ -9,7 +9,7 @@ Parameters:
     Description: This is the network stack that will be passed to make EC2 instances and such
     Type: String
     MinLength: 1
-    MaxLength: 30
+    MaxLength: 255
     Default: bearNetworkStack
 
 Resources:
@@ -17,19 +17,36 @@ Resources:
   PortalStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/bear_instance_stack.yaml
+      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_instance_stack.yaml
       Parameters:
         networkStackName: !Ref networkStackName
         #amiSelection:
 
-  CodeBucket:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/s3_bucket_stack.yaml
-      Parameters:
-        bucketName: the-cool-kids-stack
-        allPrivateAccess: true
+  #CodeBucket:
+    #Type: AWS::CloudFormation::Stack
+    #Properties:
+      #TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/s3_bucket_stack.yaml
+      #Parameters:
+        #bucketName: the-cool-kids-stack-whoop
+        #allPrivateAccess: true
 
+
+Outputs:
+  #bucketStack:
+    #Description: the name of the bucket stack
+    #Value:
+    #'Fn::Transform':
+             #- Name: 'String'
+               #Parameters:
+                 #InputString: !Sub '${AWS::StackName}'
+                 #Operation: Upper
+    #Export:
+      #Name: !Sub '${AWS::StackName}-bucketStack'
+  instanceStack:
+    Description: the name of the bucket stack
+    Value: !Ref PortalStack
+    Export:
+      Name: !Sub '${AWS::StackName}-instanceStack'
 
   #ElasticLoadBalancer:
     #Instances:
