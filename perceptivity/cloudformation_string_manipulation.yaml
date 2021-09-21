@@ -31,13 +31,13 @@ Resources:
                   "status": "success"
               }
               try:
-                  operation = event["params"]["Operation"]
-                  input = event["params"]["InputString"]
-                  no_param_string_funcs = ["Upper", "Lower", "Capitalize", "Title", "SwapCase"]
+                  operation = event["params"]["Operation"] #Used to select which method will be executed
+                  input = event["params"]["InputString"] #The passed string value
+                  no_param_string_funcs = ["Upper", "Lower", "Capitalize", "Title", "SwapCase"]#String functions taht dont have params
                   if operation in no_param_string_funcs:
                       response["fragment"] = getattr(input, operation.lower())()
-                  elif operation == "Strip":
-                      chars = None
+                  elif operation == "Strip": #Strip function
+                      chars = None  #This is the parameter that goes with this function if no chars are passed then it strips whitespace
                       if "Chars" in event["params"]:
                           chars = event["params"]["Chars"]
                       response["fragment"] = input.strip(chars)

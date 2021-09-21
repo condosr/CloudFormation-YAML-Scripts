@@ -17,6 +17,16 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_network_stack.yaml
+  bearNetworkStackWaitConditionHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  bearNetworkStackWaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref bearNetworkStackWaitConditionHandle
+      Count: 1
+      Timeout: 180
+
   bearAppStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -26,8 +36,21 @@ Resources:
           'Fn::Transform':
             - Name: 'String'
               Parameters:
-                InputString: !Sub '${!Ref bearBucketStack}'
-                Operation: Upper
+                InputString: !Sub '${!Ref bearNetworkStack}'
+                Operation: Replace
+                Old: "/"
+                New: ""
+
+  bearAppStackWaitConditionHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  bearAppStackWaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref bearAppStackWaitConditionHandle
+      Count: 1
+      Timeout: 180
+
   bearBucketStack:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -35,6 +58,16 @@ Resources:
       Parameters:
         bucketName: !Ref bucketStackName
         allPrivateAccess: true
+
+  bearBucketStackWaitConditionHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  bearBucketStackWaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    Properties:
+      Handle: !Ref bearBucketStackWaitConditionHandle
+      Count: 1
+      Timeout: 180
 
   bearMonitorStack:
     Type: AWS::CloudFormation::Stack
@@ -46,6 +79,20 @@ Resources:
             - Name: 'String'
               Parameters:
                 InputString: !Sub '${!Ref bearBucketStack}'
-                Operation: Upper
+                Operation: Replace
+                Old: "/"
+                New: ""
+          #'Fn::Transform':
+            #- Name: 'String'
+              #Parameters:
+                #InputString: !Sub '${!Ref bearBucketStack}'
+                #Operation: Upper
 
-        networkStack: !Ref bearNetworkStack
+        networkStack:
+          'Fn::Transform':
+            - Name: 'String'
+              Parameters:
+                InputString: !Sub '${!Ref bearNetworkStack}'
+                Operation: Replace
+                Old: "/"
+                New: ""

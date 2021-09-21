@@ -31,7 +31,7 @@ Resources:
         #allPrivateAccess: true
 
 
-Outputs:
+#Outputs:
   #bucketStack:
     #Description: the name of the bucket stack
     #Value:
@@ -42,11 +42,11 @@ Outputs:
                  #Operation: Upper
     #Export:
       #Name: !Sub '${AWS::StackName}-bucketStack'
-  instanceStack:
-    Description: the name of the bucket stack
-    Value: !Ref PortalStack
-    Export:
-      Name: !Sub '${AWS::StackName}-instanceStack'
+  #instanceStack:
+    #Description: the name of the bucket stack
+    #Value: !Ref PortalStack
+    #Export:
+      #Name: !Sub '${AWS::Stack}-instanceStack'
 
   #ElasticLoadBalancer:
     #Instances:

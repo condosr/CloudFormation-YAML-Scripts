@@ -261,27 +261,62 @@ Outputs:
     Description: VPC ID
     Value: !Ref BearVPC
     Export:
-      Name: !Sub '${AWS::StackName}-VPCID'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-VPCID'
+              Operation: Replace
+              Old: "/"
+              New: ""
   PortalTableauSubnetID:
     Description: The subnet ID to use for public web servers
     Value: !Ref PortalTableauSubnet
     Export:
-      Name: !Sub '${AWS::StackName}-PortalSubnetID'
-  PortalTablauSubnetAZ:
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-PortalTableauSubnetID'
+              Operation: Replace
+              Old: "/"
+              New: ""
+  PortalTableauSubnetAZ:
     Description: The AZ of the portal tableau subnet
     Value: !GetAtt PortalTableauSubnet.AvailabilityZone
     Export:
-      Name: !Sub '${AWS::StackName}-PortalTableauSubnetAZ'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-PortalTableauSubnetAZ'
+              Operation: Replace
+              Old: "/"
+              New: ""
   Alb1SubnetID:
     Description: The subnet ID to use for public web servers
     Value: !Ref Alb1Subnet
     Export:
-      Name: !Sub '${AWS::StackName}-Alb1SubnetID'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-Alb1SubnetID'
+              Operation: Replace
+              Old: "/"
+              New: ""
   Alb2SubnetID:
     Description: The subnet ID to use for public web servers
     Value: !Ref Alb2Subnet
     Export:
-      Name: !Sub '${AWS::StackName}-Alb2SubnetID'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-Alb2SubnetID'
+              Operation: Replace
+              Old: "/"
+              New: ""
   PortalSecurityGroupID:
     Description: The security group ID to use for public web servers
     Value: !GetAtt
@@ -292,12 +327,26 @@ Outputs:
         'Fn::Transform':
           - Name: 'String'
             Parameters:
-              InputString: !Sub '${AWS::StackName}-PortalSecurityGroupID'
-              Operation: Upper
+              InputString: !Sub '${AWS::StackId}-PortalSecurityGroupID'
+              Operation: Replace
+              Old: "/"
+              New: ""
+
   TableauSecurityGroupID:
     Description: The security group ID to use for public web servers
     Value: !GetAtt
       - TableauSecurityGroup
       - GroupId
     Export:
-      Name: !Sub '${AWS::StackName}-TableauSecurityGroupID'
+      #Name: !Sub 'arn:aws:cloudformation:us-east-1:708508995810:stack/lkjsdlkj-bearNetworkStack-TJL3Q47YZ2ND/d9c2ead0-1a18-11ec-810d-12311be6f10f-PortalSubnetID'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-TableauSecurityGroupID'
+              Operation: Replace
+              Old: "/"
+              New: ""
+
+
+              #

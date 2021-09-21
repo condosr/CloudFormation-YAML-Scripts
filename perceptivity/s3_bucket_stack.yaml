@@ -141,7 +141,15 @@ Outputs:
     Description: the name of the S3 bucket for reference
     Value: !Ref myS3Bucket
     Export:
-      Name: !Sub '${AWS::StackName}-bucketLocation'
+      #Name: !Sub 'arn:aws:cloudformation:us-east-1:708508995810:stack/lkjsdlkj-bearNetworkStack-TJL3Q47YZ2ND/d9c2ead0-1a18-11ec-810d-12311be6f10f-PortalSubnetID'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-bucketLocation'
+              Operation: Replace
+              Old: "/"
+              New: ""
 
   bucketArn:
     Description: the ARN of the s3 bucket
@@ -152,4 +160,12 @@ Outputs:
           - Arn
         - "/"
     Export:
-      Name: !Sub '${AWS::StackName}-bucketArn'
+      #Name: !Sub 'arn:aws:cloudformation:us-east-1:708508995810:stack/lkjsdlkj-bearNetworkStack-TJL3Q47YZ2ND/d9c2ead0-1a18-11ec-810d-12311be6f10f-PortalSubnetID'
+      Name:
+        'Fn::Transform':
+          - Name: 'String'
+            Parameters:
+              InputString: !Sub '${AWS::StackId}-bucketArn'
+              Operation: Replace
+              Old: "/"
+              New: ""
