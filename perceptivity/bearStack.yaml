@@ -17,18 +17,11 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_network_stack.yaml
-  bearNetworkStackWaitConditionHandle:
-    Type: AWS::CloudFormation::WaitConditionHandle
-
-  bearNetworkStackWaitCondition:
-    Type: AWS::CloudFormation::WaitCondition
-    Properties:
-      Handle: !Ref bearNetworkStackWaitConditionHandle
-      Count: 1
-      Timeout: 180
+  
 
   bearAppStack:
     Type: AWS::CloudFormation::Stack
+    DependsOn: bearNetworkStack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_app_stack.yaml
       Parameters:
@@ -41,36 +34,22 @@ Resources:
                 Old: "/"
                 New: ""
 
-  bearAppStackWaitConditionHandle:
-    Type: AWS::CloudFormation::WaitConditionHandle
-
-  bearAppStackWaitCondition:
-    Type: AWS::CloudFormation::WaitCondition
-    Properties:
-      Handle: !Ref bearAppStackWaitConditionHandle
-      Count: 1
-      Timeout: 180
+ 
 
   bearBucketStack:
     Type: AWS::CloudFormation::Stack
+    DependsOn: bearNetworkStack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/s3_bucket_stack.yaml
       Parameters:
         bucketName: !Ref bucketStackName
         allPrivateAccess: true
 
-  bearBucketStackWaitConditionHandle:
-    Type: AWS::CloudFormation::WaitConditionHandle
-
-  bearBucketStackWaitCondition:
-    Type: AWS::CloudFormation::WaitCondition
-    Properties:
-      Handle: !Ref bearBucketStackWaitConditionHandle
-      Count: 1
-      Timeout: 180
+ 
 
   bearMonitorStack:
     Type: AWS::CloudFormation::Stack
+    DependsOn: bearBucketStack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_monitor_stack.yaml
       Parameters:
