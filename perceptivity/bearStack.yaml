@@ -21,7 +21,7 @@ Resources:
 
   bearAppStack:
     Type: AWS::CloudFormation::Stack
-    DependsOn: bearNetworkStack
+    DependsOn: bearBucketStack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_app_stack.yaml
       Parameters:
@@ -29,7 +29,7 @@ Resources:
           'Fn::Transform':
             - Name: 'String'
               Parameters:
-                InputString: !Sub '${!Ref bearNetworkStack}'
+                InputString:  "${bearNetworkStack}"
                 Operation: Replace
                 Old: "/"
                 New: ""
@@ -49,7 +49,7 @@ Resources:
 
   bearMonitorStack:
     Type: AWS::CloudFormation::Stack
-    DependsOn: bearBucketStack
+    DependsOn: bearAppStack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_monitor_stack.yaml
       Parameters:
@@ -57,7 +57,7 @@ Resources:
           'Fn::Transform':
             - Name: 'String'
               Parameters:
-                InputString: !Sub '${!Ref bearBucketStack}'
+                InputString: "${bearBucketStack}"
                 Operation: Replace
                 Old: "/"
                 New: ""
@@ -71,7 +71,7 @@ Resources:
           'Fn::Transform':
             - Name: 'String'
               Parameters:
-                InputString: !Sub '${!Ref bearNetworkStack}'
+                InputString:  "${bearNetworkStack}"
                 Operation: Replace
                 Old: "/"
                 New: ""

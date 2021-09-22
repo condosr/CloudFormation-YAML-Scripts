@@ -172,15 +172,16 @@ Resources:
       #PlacementGroupName: String
       #PrivateIpAddress: String
       #RamdiskId: String
-      SecurityGroupIds: !ImportValue
-        'Fn::Sub': '${networkStackName}-TableauSecurityGroupID'
+      SecurityGroupIds: 
+        - !ImportValue
+          'Fn::Sub': '${networkStackName}-TableauSecurityGroupID'
         #SecurityGroups:
         #- String
         #SourceDestCheck: Boolean
         #SsmAssociations:
         #- SsmAssociation
       SubnetId: !ImportValue
-        'Fn::Sub': '${networkStackName}-PortalSubnetID'
+        'Fn::Sub': '${networkStackName}-PortalTableauSubnetID'
       #Tenancy: String
       #UserData: String to do later
 

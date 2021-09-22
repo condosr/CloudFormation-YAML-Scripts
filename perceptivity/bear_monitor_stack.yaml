@@ -55,16 +55,14 @@ Resources:
     Type: AWS::EC2::FlowLog
     Properties:
       #DeliverLogsPermissionArn: String
-      LogDestination:
-        - !ImportValue
-          'Fn::Sub': '${bucketStack}-bucketArn'
+      LogDestination: !ImportValue
+        'Fn::Sub': '${bucketStack}-bucketArn'
       LogDestinationType: s3
       #LogFormat: String
       #LogGroupName: !Ref portalFlowLogsGroup
       #MaxAggregationInterval: 60
-      ResourceId:
-        - !ImportValue
-          'Fn::Sub': '${networkStack}-PortalSubnetID'
+      ResourceId: !ImportValue
+        'Fn::Sub': '${networkStack}-PortalSubnetID'
       ResourceType: Subnet
       #Tags:
         #- Key: flowLogName
@@ -89,9 +87,8 @@ Resources:
       #IsMultiRegionTrail: Boolean
       #IsOrganizationTrail: Boolean
       #KMSKeyId: String
-      S3BucketName:
-        - !ImportValue
-          'Fn::Sub': '${bucketStack}-bucketLocation'
+      S3BucketName: !ImportValue
+        'Fn::Sub': '${bucketStack}-bucketLocation'
 
       #S3KeyPrefix: String
       #SnsTopicName: String
