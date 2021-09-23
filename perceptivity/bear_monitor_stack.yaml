@@ -56,13 +56,50 @@ Resources:
     Properties:
       #DeliverLogsPermissionArn: String
       LogDestination: !ImportValue
-        'Fn::Sub': '${bucketStack}-bucketArn'
+        'Fn::Sub':
+          'Fn::Transform':
+            - Name: 'String'
+              Parameters:
+                InputString: !Sub
+                  - '${bucketStack}-bucketArn'
+                  - {bearNetworkStack: !Ref bucketStack}
+                Operation: Replace
+                Old: "/"
+                New: ""
+      #!ImportValue
+        #'Fn::Sub':
+          #'Fn::Transform':
+            #- Name: 'String'
+              #Parameters:
+                #InputString: '${bucketStack}-bucketArn'
+                #Operation: Replace
+                #Old: "/"
+                #New: ""
+
       LogDestinationType: s3
       #LogFormat: String
       #LogGroupName: !Ref portalFlowLogsGroup
       #MaxAggregationInterval: 60
       ResourceId: !ImportValue
-        'Fn::Sub': '${networkStack}-PortalSubnetID'
+        'Fn::Sub':
+          'Fn::Transform':
+            - Name: 'String'
+              Parameters:
+                InputString: !Sub
+                  - '${networkStack}-PortalTableauSubnetID'
+                  - {bearNetworkStack: !Ref networkStack}
+                Operation: Replace
+                Old: "/"
+                New: ""
+      #!ImportValue
+        #'Fn::Sub':
+          #'Fn::Transform':
+            #- Name: 'String'
+              #Parameters:
+                #InputString: '${networkStack}-PortalSubnetID'
+                #Operation: Replace
+                #Old: "/"
+                #New: ""
       ResourceType: Subnet
       #Tags:
         #- Key: flowLogName
@@ -88,7 +125,25 @@ Resources:
       #IsOrganizationTrail: Boolean
       #KMSKeyId: String
       S3BucketName: !ImportValue
-        'Fn::Sub': '${bucketStack}-bucketLocation'
+        'Fn::Sub':
+          'Fn::Transform':
+            - Name: 'String'
+              Parameters:
+                InputString: !Sub
+                  - '${bucketStack}-bucketLocation'
+                  - {bearNetworkStack: !Ref bucketStack}
+                Operation: Replace
+                Old: "/"
+                New: ""
+      #!ImportValue
+        #'Fn::Sub':
+          #'Fn::Transform':
+            #- Name: 'String'
+              #Parameters:
+                #InputString: '${bucketStack}-bucketLocation'
+                #Operation: Replace
+                #Old: "/"
+                #New: ""
 
       #S3KeyPrefix: String
       #SnsTopicName: String

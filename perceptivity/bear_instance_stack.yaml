@@ -9,202 +9,57 @@ Parameters:
     Type: String
     MinLength: 1
     MaxLength: 255
-    #AllowedPattern: "^[a-zA-Z][-azA-Z0-9]*$"
     Default: "bearNetworkStack"
-  #designatedSubnet:
-    #Description: the subnet used for the ec2 instance
-    #Type: AWS::EC2::Subnet
-    #AllowedValues: [!ImportValue 'Fn::Sub': '${networkStackName}-PortalSubnetID', !ImportValue 'Fn::Sub': '${networkStackName}-Alb1SubnetID', !ImportValue 'Fn::Sub': '${networkStackName}-Alb2SubnetID' ]
-  #amountOfVolumes:
-    #Description: the amount of volumes you want to attatch
-    #Type: Number
-    #AllowedValues: [0, 1, 2, 3, 4]
-    #Default: 0
   amiSelection:
     Description: the ami that will be used
     Type: String
-    #MinLength: 1
-    #MaxLength: 30
     Default: 'ami-09e67e426f25ce0d7'
-  #volume1Device:
-    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ''
-  #volume1Device:
-    #!If [
-      #!Or [ oneVolume, twoVolume, threeVolume, fourVolume ],
-      #[
-    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device),
-    #Type: String,
-    #MinLength: 0,
-    #MaxLength: 30,
-    #Default: ""
-  #],
-  #AWS::NoValue
-  #]
 
-  #volume1ID:
-    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ""
-  #volume2Device:
-    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ''
-  #volume2ID:
-    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ''
-  #volume3Device:
-    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ''
-  #volume3ID:
-    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ''
-  #volume4Device:
-    #Description: Dest that the volume will be atatched to ex. /dev/sde (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ''
-  #volume4ID:
-    #Description: The ID of the volume you wish to attatch ex. vol-06a8613acf18f186b (leave blank if you dont have a device)
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 30
-    #Default: ''
-
-#Conditions:
-  #oneVolume: !Equals [!Ref amountOfVolumes, 1]
-  #twoVolumes: !Equals [!Ref amountOfVolumes, 2]
-  #threeVolumes: !Equals
-    #- !Ref amountOfVolumes
-    #- 3
-  #fourVolumes: !Equals
-    #- !Ref amountOfVolumes
-    #- 4
-  #hasVolumes: !Not [!Equals [!Ref amountOfVolumes, 0]]
-  #noVolumes: !Equals [!Ref amountOfVolumes, 0]
-
-  #storedVolumeName:
-    #Type: String
-    #MinLength: 0
-    #MaxLength: 255
-    #AllowedPattern: "^[a-zA-Z][-azA-Z0-9]*$"
-    #Default: ""
-  #storedVolumeID:
-    #Type: String
-    #MinLength: 1
-    #MaxLength: 255
-    #AllowedPattern: "^[a-zA-Z][-azA-Z0-9]*$"
-    #Default:
-#Conditions:
-  #amountOfInputVolumes:
-    #oneInputVolume: !Equals
-      #- !Ref amountOfVolumes
-      #- One
 Resources:
-
-
-
-
-
-
-
   ServerBear:
     Type: AWS::EC2::Instance
-    #Condition: "hasVolumes"
     Properties:
       AdditionalInfo: practice ec2
-      #Affinity: String
       AvailabilityZone: !ImportValue
-        'Fn::Sub': '${networkStackName}-PortalTableauSubnetAZ'
-        #BlockDeviceMappings:
-        #- DeviceName: /dev/sda1
-        #NoDevice: {}
-        #CpuOptions:
-        #CoreCount: 1 #ref server
-        #ThreadsPerCore: 1 #ref server
-        #CreditSpecification:
-        #CreditSpecification
+        'Fn::Sub':
+          'Fn::Transform':
+            - Name: 'String'
+              Parameters:
+                InputString: !Sub
+                  - '${bearNetworkStack}-PortalTableauSubnetAZ'
+                  - {bearNetworkStack: !Ref networkStackName}
+                Operation: Replace
+                Old: "/"
+                New: ""
       DisableApiTermination: False
-        #EbsOptimized: Boolean
-        #ElasticGpuSpecifications:
-        #- ElasticGpuSpecification
-        #ElasticInferenceAccelerators:
-        #- ElasticInferenceAccelerator
-        #EnclaveOptions:
-      #EnclaveOptions
-      #HibernationOptions: This is interesting
-      #HibernationOptions
-      #HostId: String
-      #HostResourceGroupArn: String
       IamInstanceProfile: cloudWatchAgentUser
       ImageId: 'ami-08e08d7ff2687cede'
-      #InstanceInitiatedShutdownBehavior: String
       InstanceType: t2.micro
-      #Ipv6AddressCount: Integer
-      #Ipv6Addresses:
-      #- InstanceIpv6Address
-      #KernelId: String
       KeyName: practiceVolumeExperiment
-        #LaunchTemplate:
-        #LaunchTemplateSpecification
-        #LicenseSpecifications:
-        #- LicenseSpecification
-      #Monitoring: Boolean
-      #NetworkInterfaces: !ImportValue
-      #'Fn::Sub': '${networkStackName}-VPCID'
-      #PlacementGroupName: String
-      #PrivateIpAddress: String
-      #RamdiskId: String
-      SecurityGroupIds: 
+      SecurityGroupIds:
         - !ImportValue
-          'Fn::Sub': '${networkStackName}-TableauSecurityGroupID'
-        #SecurityGroups:
-        #- String
-        #SourceDestCheck: Boolean
-        #SsmAssociations:
-        #- SsmAssociation
+          'Fn::Sub':
+            'Fn::Transform':
+              - Name: 'String'
+                Parameters:
+                  InputString: !Sub
+                    - '${bearNetworkStack}-TableauSecurityGroupID'
+                    - {bearNetworkStack: !Ref networkStackName}
+                  Operation: Replace
+                  Old: "/"
+                  New: ""
+
       SubnetId: !ImportValue
-        'Fn::Sub': '${networkStackName}-PortalTableauSubnetID'
-      #Tenancy: String
-      #UserData: String to do later
-
-      #Volumes:
-        #!If [
-          #oneVolume,
-          #[!And [Device: !Ref volume1Device, VolumeId: !Ref volume1ID]],
-          #Volumes:
-            #- [Device: !Ref volume1Device, VolumeId: !Ref volume1ID],
-          #!If [
-              #twoVolumes,
-            #[ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ] ],
-            #!If [
-                #threeVolumes,
-                #[ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ], [ Device: !Ref volume3Device, VolumeId: !Ref volume3ID ] ],
-                #!If [ fourVolumes,
-                #[ [ Device: !Ref volume1Device, VolumeId: !Ref volume1ID ], [ Device: !Ref volume2Device, VolumeId: !Ref volume2ID ], [ Device: !Ref volume3Device, VolumeId: !Ref volume3ID ], [ Device: !Ref volume4Device, VolumeId: !Ref volume4ID ] ],
-                #!Ref AWS::NoValue
-                #]
-            #]
-          #]
-        #]
-
+        'Fn::Sub':
+          'Fn::Transform':
+            - Name: 'String'
+              Parameters:
+                InputString: !Sub
+                  - '${bearNetworkStack}-PortalTableauSubnetID'
+                  - {bearNetworkStack: !Ref networkStackName}
+                Operation: Replace
+                Old: "/"
+                New: ""
 
   serverNoVolAttatchEIP:
     Type: AWS::EC2::EIP

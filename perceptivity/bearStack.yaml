@@ -25,14 +25,14 @@ Resources:
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_app_stack.yaml
       Parameters:
-        networkStackName:
-          'Fn::Transform':
-            - Name: 'String'
-              Parameters:
-                InputString: !GetAtt bearNetworkStack.StackId
-                Operation: Replace
-                Old: "/"
-                New: ""
+        networkStackName: !Ref bearNetworkStack
+          #'Fn::Transform':
+            #- Name: 'String'
+              #Parameters:
+                #InputString: !GetAtt bearNetworkStack.StackId
+                #Operation: Replace
+                #Old: "/"
+                #New: ""
 
  
 
@@ -53,26 +53,26 @@ Resources:
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_monitor_stack.yaml
       Parameters:
-        bucketStack:
-          'Fn::Transform':
-            - Name: 'String'
-              Parameters:
-                InputString: !Import
-                  !Sub ''
-                Operation: Replace
-                Old: "/"
-                New: ""
+        bucketStack: !Ref bearBucketStack
+          #'Fn::Transform':
+            #- Name: 'String'
+              #Parameters:
+                #InputString: !Import
+                  #!Sub ''
+                #Operation: Replace
+                #Old: "/"
+                #New: ""
           #'Fn::Transform':
             #- Name: 'String'
               #Parameters:
                 #InputString: !Sub '${!Ref bearBucketStack}'
                 #Operation: Upper
 
-        networkStack:
-          'Fn::Transform':
-            - Name: 'String'
-              Parameters:
-                InputString: !GetAtt bearNetworkStack.StackId
-                Operation: Replace
-                Old: "/"
-                New: ""
+        networkStack: !Ref bearNetworkStack
+          #'Fn::Transform':
+            #- Name: 'String'
+              #Parameters:
+                #InputString: !GetAtt bearNetworkStack.StackId
+                #Operation: Replace
+                #Old: "/"
+                #New: ""

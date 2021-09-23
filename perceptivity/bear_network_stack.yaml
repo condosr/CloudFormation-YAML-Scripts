@@ -339,7 +339,7 @@ Outputs:
       - GroupId
     Export:
       #Name: !Sub 'arn:aws:cloudformation:us-east-1:708508995810:stack/lkjsdlkj-bearNetworkStack-TJL3Q47YZ2ND/d9c2ead0-1a18-11ec-810d-12311be6f10f-PortalSubnetID'
-      Name:
+      Name: #!Sub '${AWS::StackId}-TableauSecurityGroupID'
         'Fn::Transform':
           - Name: 'String'
             Parameters:
@@ -351,7 +351,7 @@ Outputs:
     Description: the name of the stack
     Value: AWS::StackId
     Export:
-      Name:
+      Name: #!Sub '${AWS::StackId}'
           'Fn::Transform':
             - Name: 'String'
               Parameters:
