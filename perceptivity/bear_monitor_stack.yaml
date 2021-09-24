@@ -15,7 +15,6 @@ Parameters:
     MinLength: 1
     MaxLength: 255
 
-
 Resources:
   cloudTrailRole:
     Type: AWS::IAM::Role
@@ -48,13 +47,10 @@ Resources:
   cloudTrailLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      #KmsKeyId: String
       LogGroupName: cloudTrailLogGroup
-      #RetentionInDays: Integer
   flowLogMonitoring:
     Type: AWS::EC2::FlowLog
     Properties:
-      #DeliverLogsPermissionArn: String
       LogDestination: !ImportValue
         'Fn::Sub':
           'Fn::Transform':
@@ -66,45 +62,21 @@ Resources:
                 Operation: Replace
                 Old: "/"
                 New: ""
-      #!ImportValue
-        #'Fn::Sub':
-          #'Fn::Transform':
-            #- Name: 'String'
-              #Parameters:
-                #InputString: '${bucketStack}-bucketArn'
-                #Operation: Replace
-                #Old: "/"
-                #New: ""
-
       LogDestinationType: s3
-      #LogFormat: String
-      #LogGroupName: !Ref portalFlowLogsGroup
-      #MaxAggregationInterval: 60
       ResourceId: !ImportValue
         'Fn::Sub':
           'Fn::Transform':
             - Name: 'String'
               Parameters:
                 InputString: !Sub
-                  - '${networkStack}-PortalTableauSubnetID'
+                  - '${networkStack}-PortalSubnetID'
                   - {bearNetworkStack: !Ref networkStack}
                 Operation: Replace
                 Old: "/"
                 New: ""
-      #!ImportValue
-        #'Fn::Sub':
-          #'Fn::Transform':
-            #- Name: 'String'
-              #Parameters:
-                #InputString: '${networkStack}-PortalSubnetID'
-                #Operation: Replace
-                #Old: "/"
-                #New: ""
       ResourceType: Subnet
-      #Tags:
-        #- Key: flowLogName
-          #Value: portalSubnetFlowLogs
       TrafficType: ALL
+
   cloudTrail:
     Type: AWS::CloudTrail::Trail
     Properties:
@@ -114,16 +86,7 @@ Resources:
       CloudWatchLogsRoleArn: !GetAtt
         - cloudTrailRole
         - Arn
-      #EnableLogFileValidation: Boolean
-      #EventSelectors:
-        #- EventSelector
-      #IncludeGlobalServiceEvents: Boolean
-      #InsightSelectors:
-        #- InsightSelector
       IsLogging: true
-      #IsMultiRegionTrail: Boolean
-      #IsOrganizationTrail: Boolean
-      #KMSKeyId: String
       S3BucketName: !ImportValue
         'Fn::Sub':
           'Fn::Transform':
@@ -135,48 +98,7 @@ Resources:
                 Operation: Replace
                 Old: "/"
                 New: ""
-      #!ImportValue
-        #'Fn::Sub':
-          #'Fn::Transform':
-            #- Name: 'String'
-              #Parameters:
-                #InputString: '${bucketStack}-bucketLocation'
-                #Operation: Replace
-                #Old: "/"
-                #New: ""
-
-      #S3KeyPrefix: String
-      #SnsTopicName: String
       Tags:
         - Key: yuh
           Value: yuhyuh
       TrailName: bearCogCloudTrail
-  #ec2Alarm:
-    #Type: AWS::CloudWatch::Alarm
-    #Properties:
-      #ActionsEnabled: true
-      #AlarmActions:
-        #- arn:aws:sns:us-east-1:708508995810:test_alarm
-      #AlarmDescription: This alarm indidcates when cpu usage goes above 70%
-      #AlarmName: ExcessiveCpuUsage
-      #ComparisonOperator: GreaterThanOrEqualToThreshold
-      #DatapointsToAlarm: 1
-      #Dimensions:
-        #- Dimension
-      #EvaluateLowSampleCountPercentile: String
-      #EvaluationPeriods: 3
-      #ExtendedStatistic: String
-      #InsufficientDataActions:
-        #- String
-      #MetricName: "CPUUtilization•InstanceId: i-0e8348fe53e3cdde5"
-      #Metrics:
-        #- MetricDataQuery
-      #Namespace: "AWS/EC2"
-      #OKActions:
-        #- String
-      #Period: 60
-      #Statistic: Average
-      #Threshold: 70
-      #ThresholdMetricId: String
-      #TreatMissingData: String
-      #Unit: Percent

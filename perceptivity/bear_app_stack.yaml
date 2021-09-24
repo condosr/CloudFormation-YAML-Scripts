@@ -20,40 +20,4 @@ Resources:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_instance_stack.yaml
       Parameters:
         networkStackName: !Ref networkStackName
-        #amiSelection:
-
-  #CodeBucket:
-    #Type: AWS::CloudFormation::Stack
-    #Properties:
-      #TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/s3_bucket_stack.yaml
-      #Parameters:
-        #bucketName: the-cool-kids-stack-whoop
-        #allPrivateAccess: true
-
-
-#Outputs:
-  #bucketStack:
-    #Description: the name of the bucket stack
-    #Value:
-    #'Fn::Transform':
-             #- Name: 'String'
-               #Parameters:
-                 #InputString: !Sub '${AWS::StackName}'
-                 #Operation: Upper
-    #Export:
-      #Name: !Sub '${AWS::StackName}-bucketStack'
-  #instanceStack:
-    #Description: the name of the bucket stack
-    #Value: !Ref PortalStack
-    #Export:
-      #Name: !Sub '${AWS::Stack}-instanceStack'
-
-  #ElasticLoadBalancer:
-    #Instances:
-      #- !Ref PortalStack.
-    #Subnets:
-      #- !ImportValue 'Fn::Sub': '${networkStackName}-PortalSubnetID'
-      #- !ImportValue 'Fn::Sub': '${networkStackName}-Alb1SubnetID'
-      #- !ImportValue 'Fn::Sub': '${networkStackName}-Alb2SubnetID'
-
 

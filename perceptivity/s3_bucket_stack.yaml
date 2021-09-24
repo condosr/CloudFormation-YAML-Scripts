@@ -1,14 +1,14 @@
-AWSTemplateFormatVersion: 2010-09-09
+AWSTemplateFormatVersion: 2010-09-09 #This section of the template will always have the same value
 Description: >-
   This is a template that will be used as a nested stack of S3 buckets.
 Parameters:
-  bucketName:
+  bucketName: #parameters are values passed for the rest of the template to use later on in this case we are passing the bucket name
     Description: this will be the name of the bucket
     Type: String
     MinLength: 1
     MaxLength: 255
     AllowedPattern: "[a-z-]+"
-  allPrivateAccess:
+  allPrivateAccess: #this determines whether a bucket will
     Description: a boolean that states whether your bucket is public or private
     Type: String
     AllowedValues: [True, False]
@@ -17,32 +17,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
     Properties:
-      #AccelerateConfiguration:
-        #AccelerateConfiguration
-      #AccessControl: String
-      #AnalyticsConfigurations:
-        #- AnalyticsConfiguration
-      #BucketEncryption:
-        #BucketEncryption
       BucketName: !Ref bucketName
-      #CorsConfiguration:
-        #CorsConfiguration
-      #IntelligentTieringConfigurations:
-        #- IntelligentTieringConfiguration
-      #InventoryConfigurations:
-        #- InventoryConfiguration
-      #LifecycleConfiguration:
-        #LifecycleConfiguration
-      #LoggingConfiguration:
-        #DestinationBucketName: !Ref myS3Bucket
-        #LogFilePrefix: "log-files"
-      #MetricsConfigurations:
-        #- MetricsConfiguration
-      #NotificationConfiguration:
-        #NotificationConfiguration
-      #ObjectLockConfiguration:
-        #ObjectLockConfiguration
-      #ObjectLockEnabled: Boolean
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerPreferred
@@ -51,15 +26,10 @@ Resources:
         BlockPublicPolicy: !Ref allPrivateAccess
         IgnorePublicAcls: !Ref allPrivateAccess
         RestrictPublicBuckets: !Ref allPrivateAccess
-      #ReplicationConfiguration: may be useful, keep this in mind
-        #ReplicationConfiguration
       Tags:
         - Key: bucketName
           Value: !Ref bucketName
-      #VersioningConfiguration: Might be good for the cog logs
-        #VersioningConfiguration
-      #WebsiteConfiguration: may be useful for the decision tree, jupyter notebook scenario
-        #WebsiteConfiguration
+
   cloudTrailBucketPolicy:
 
     Type: AWS::S3::BucketPolicy
@@ -81,7 +51,6 @@ Resources:
             Principal:
               Service: logs.us-east-1.amazonaws.com
             Action: 's3:PutObject'
-            #Resource: 'arn:aws:s3:::bear-cognition-logs/*'
             Resource: !Join
               - ""
               - - !GetAtt
@@ -141,7 +110,6 @@ Outputs:
     Description: the name of the S3 bucket for reference
     Value: !Ref myS3Bucket
     Export:
-      #Name: !Sub 'arn:aws:cloudformation:us-east-1:708508995810:stack/lkjsdlkj-bearNetworkStack-TJL3Q47YZ2ND/d9c2ead0-1a18-11ec-810d-12311be6f10f-PortalSubnetID'
       Name:
         'Fn::Transform':
           - Name: 'String'
@@ -160,7 +128,6 @@ Outputs:
           - Arn
         - "/"
     Export:
-      #Name: !Sub 'arn:aws:cloudformation:us-east-1:708508995810:stack/lkjsdlkj-bearNetworkStack-TJL3Q47YZ2ND/d9c2ead0-1a18-11ec-810d-12311be6f10f-PortalSubnetID'
       Name:
         'Fn::Transform':
           - Name: 'String'
