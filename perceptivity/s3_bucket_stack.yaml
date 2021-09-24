@@ -8,116 +8,115 @@ Parameters:
     MinLength: 1
     MaxLength: 255
     AllowedPattern: "[a-z-]+"
-  allPrivateAccess: #this determines whether a bucket will
+  allPrivateAccess: #this determines whether a bucket will allow public or private access
     Description: a boolean that states whether your bucket is public or private
     Type: String
     AllowedValues: [True, False]
 Resources:
-  myS3Bucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
+  myS3Bucket: #This allowecates the s3 bucket resource
+    Type: AWS::S3::Bucket #the type field just states what AWS resource will be used
+    DeletionPolicy: Delete #This states that the bucket and its contents should be deleted upon deletion
     Properties:
-      BucketName: !Ref bucketName
+      BucketName: !Ref bucketName #This references the parameter field bucketName to pass the bucket name
       OwnershipControls:
         Rules:
-          - ObjectOwnership: BucketOwnerPreferred
-      PublicAccessBlockConfiguration:
+          - ObjectOwnership: BucketOwnerPreferred #This states the ownership of the bucket
+      PublicAccessBlockConfiguration: #This property passes in the parameter value allPrivateAccess which is a boolean value
         BlockPublicAcls: !Ref allPrivateAccess
         BlockPublicPolicy: !Ref allPrivateAccess
         IgnorePublicAcls: !Ref allPrivateAccess
         RestrictPublicBuckets: !Ref allPrivateAccess
-      Tags:
+      Tags:  #Tags for the bucket
         - Key: bucketName
           Value: !Ref bucketName
 
-  cloudTrailBucketPolicy:
-
-    Type: AWS::S3::BucketPolicy
+  cloudTrailBucketPolicy: #This resource is the bucket policy that will be attatched to the bucket
+    Type: AWS::S3::BucketPolicy #The AWS resource that is associated with a bucket policy
     Properties:
-      Bucket: !Ref myS3Bucket
+      Bucket: !Ref myS3Bucket #A resource reference to the bucket created above
       PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Sid: '1'
-            Effect: Allow
-            Principal:
-              Service: logs.us-east-1.amazonaws.com
-            Action: 's3:GetBucketAcl'
-            Resource: !GetAtt
-              - myS3Bucket
-              - Arn
-          - Sid: '2'
-            Effect: Allow
-            Principal:
-              Service: logs.us-east-1.amazonaws.com
-            Action: 's3:PutObject'
-            Resource: !Join
-              - ""
-              - - !GetAtt
-                  - myS3Bucket
-                  - Arn
-                - "/*"
-            Condition:
-              StringEquals:
+        Version: 2012-10-17                            #
+        Statement:                                     #
+          - Sid: '1'                                   #
+            Effect: Allow                              #
+            Principal:                                 #
+              Service: logs.us-east-1.amazonaws.com    #
+            Action: 's3:GetBucketAcl'                  #
+            Resource: !GetAtt                          #
+              - myS3Bucket                             #
+              - Arn                                    #
+          - Sid: '2'                                   #
+            Effect: Allow                              #
+            Principal:                                 #
+              Service: logs.us-east-1.amazonaws.com    #
+            Action: 's3:PutObject'                     #
+            Resource: !Join                            #
+              - ""                                     #
+              - - !GetAtt                              #
+                  - myS3Bucket                         #
+                  - Arn                                #
+                - "/*"                                 #
+            Condition:                                 #
+              StringEquals:                            # 
                 's3:x-amz-acl': bucket-owner-full-control
-          - Sid: AWSLogDeliveryWrite
-            Effect: Allow
-            Principal:
-              Service: delivery.logs.amazonaws.com
-            Action: 's3:PutObject'
-            Resource: !Join
-              - ""
-              - - !GetAtt
-                  - myS3Bucket
-                  - Arn
-                - "/*"
-            Condition:
-              StringEquals:
+          - Sid: AWSLogDeliveryWrite                   #
+            Effect: Allow                              #
+            Principal:                                 #
+              Service: delivery.logs.amazonaws.com     #
+            Action: 's3:PutObject'                     # This bucket policy states what resources are allowed to access the bucket
+            Resource: !Join                            # 
+              - ""                                     #
+              - - !GetAtt                              #
+                  - myS3Bucket                         #
+                  - Arn                                #
+                - "/*"                                 #
+            Condition:                                 #
+              StringEquals:                            #
                 's3:x-amz-acl': bucket-owner-full-control
-          - Sid: AWSLogDeliveryAclCheck
-            Effect: Allow
-            Principal:
-              Service: delivery.logs.amazonaws.com
-            Action: 's3:GetBucketAcl'
-            Resource: !GetAtt
-              - myS3Bucket
-              - Arn
-          - Sid: AWSCloudTrailAclCheck20150319
-            Effect: Allow
-            Principal:
-              Service: cloudtrail.amazonaws.com
-            Action: 's3:GetBucketAcl'
-            Resource: !GetAtt
-              - myS3Bucket
-              - Arn
-          - Sid: AWSCloudTrailWrite20150319
-            Effect: Allow
-            Principal:
-              Service: cloudtrail.amazonaws.com
-            Action: 's3:PutObject'
-            Resource: !Join
-              - ""
-              - - !GetAtt
-                  - myS3Bucket
-                  - Arn
-                - "/*"
-            Condition:
-              StringEquals:
+          - Sid: AWSLogDeliveryAclCheck                #
+            Effect: Allow                              #
+            Principal:                                 #
+              Service: delivery.logs.amazonaws.com     #
+            Action: 's3:GetBucketAcl'                  #
+            Resource: !GetAtt                          #
+              - myS3Bucket                             #
+              - Arn                                    #
+          - Sid: AWSCloudTrailAclCheck20150319         #
+            Effect: Allow                              #
+            Principal:                                 #
+              Service: cloudtrail.amazonaws.com        #
+            Action: 's3:GetBucketAcl'                  #
+            Resource: !GetAtt                          #
+              - myS3Bucket                             #
+              - Arn                                    #
+          - Sid: AWSCloudTrailWrite20150319            #
+            Effect: Allow                              #
+            Principal:                                 #
+              Service: cloudtrail.amazonaws.com        #
+            Action: 's3:PutObject'                     #
+            Resource: !Join                            #
+              - ""                                     #
+              - - !GetAtt                              #
+                  - myS3Bucket                         #
+                  - Arn                                #
+                - "/*"                                 #
+            Condition:                                 #
+              StringEquals:                            #
                 's3:x-amz-acl': bucket-owner-full-control
 
-Outputs:
-  bucketLocation:
+Outputs: #This section states what information will be in the outputs section it is generally utilized for links and valuable info like bucket name/ location
+  bucketLocation: #states the bucket location 
     Description: the name of the S3 bucket for reference
-    Value: !Ref myS3Bucket
+    Value: !Ref myS3Bucket #the passed value is the S3 bucket name
     Export:
       Name:
-        'Fn::Transform':
-          - Name: 'String'
-            Parameters:
-              InputString: !Sub '${AWS::StackId}-bucketLocation'
-              Operation: Replace
-              Old: "/"
-              New: ""
+        'Fn::Transform':                                         #
+          - Name: 'String'                                       #This is the formula used to strip away the '/' from the StackId
+            Parameters:                                          #This formula is pretty uniform for all imports and exports
+              InputString: !Sub '${AWS::StackId}-bucketLocation' #
+              Operation: Replace                                 #
+              Old: "/"                                           #
+              New: ""                                            #
 
   bucketArn:
     Description: the ARN of the s3 bucket

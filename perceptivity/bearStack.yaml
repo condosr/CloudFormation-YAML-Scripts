@@ -5,42 +5,42 @@ Description: >-
   for the AWS resources that you use when you create a stack from this template.
 
 Parameters:
-  bucketStackName:
-    Description: this will be the name of the bucket
+  bucketStackName:  
+    Description: this will be the name of the bucket #Same as the bucket stack, this is the parameter value of the bucket stack
     Type: String
     MinLength: 1
     MaxLength: 45
-    AllowedPattern: "[a-z-]+"
+    AllowedPattern: "[a-z-]+" #This regex says valid characters are "a-z" "-"
 
-Resources:
+Resources: #This resource references the network stack that is in this repository and uploaded to s3
   bearNetworkStack:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_network_stack.yaml
+      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_network_stack.yaml #This is the link to the network stack
   
 
-  bearAppStack:
+  bearAppStack: #This resource references the bearAppStack that is in this repository and uploaded to s3
     Type: AWS::CloudFormation::Stack
     DependsOn: bearMonitorStack
     Properties:
-      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_app_stack.yaml
+      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_app_stack.yaml #This is the link to the bearAppStack
       Parameters:
         networkStackName: !Ref bearNetworkStack
 
-  bearBucketStack:
+  bearBucketStack: #This resource references the bearBucketStack that is in this repository and uploaded to s3
     Type: AWS::CloudFormation::Stack
     DependsOn: bearNetworkStack
     Properties:
-      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/s3_bucket_stack.yaml
+      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/s3_bucket_stack.yaml #This is the link to the bearBucketStack
       Parameters:
         bucketName: !Ref bucketStackName
         allPrivateAccess: true
-
-  bearMonitorStack:
+ 
+  bearMonitorStack: #This resource references the bearMonitorStack that is in this repository and uploaded to s3
     Type: AWS::CloudFormation::Stack
     DependsOn: bearBucketStack
     Properties:
-      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_monitor_stack.yaml
+      TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_monitor_stack.yaml #This is the link to the bearMonitorStack
       Parameters:
         bucketStack: !Ref bearBucketStack
         networkStack: !Ref bearNetworkStack

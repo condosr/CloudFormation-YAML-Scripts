@@ -4,19 +4,19 @@ Description: >-
   that creates a VPC with DNS and public IPs enabled. Note that you are billed
   for the AWS resources that you use when you create a stack from this template.
 Parameters:
-  networkStackName:
+  networkStackName: #passes the networkStack Id
     Description: the bear network stacked that will be used to import necessary variables
     Type: String
     MinLength: 1
     MaxLength: 255
     Default: "bearNetworkStack"
-  amiSelection:
+  amiSelection: #This is used for a designated ami a client wishes to use
     Description: the ami that will be used
     Type: String
     Default: 'ami-09e67e426f25ce0d7'
 
 Resources:
-  ServerBear:
+  ServerBear: #This creates an ec2 instance 
     Type: AWS::EC2::Instance
     Properties:
       AdditionalInfo: practice ec2
@@ -61,7 +61,7 @@ Resources:
                 Old: "/"
                 New: ""
 
-  serverNoVolAttatchEIP:
+  serverNoVolAttatchEIP: #creates a server elastic ip to allow connection to the internet
     Type: AWS::EC2::EIP
     Properties:
       Domain: standard
