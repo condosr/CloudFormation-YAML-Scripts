@@ -1,0 +1,145 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation stack that will be used to create CI/CD pipelines. It will be broad to fit the needs of different pipelines.
+Resources:
+  pipelineCodeBuild:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        #ArtifactIdentifier: String
+        #EncryptionDisabled: Boolean
+        #Location: CODEPIPELINE
+        #Name: CODEPIPELINE
+        #NamespaceType: CODEPIPELINE
+        #OverrideArtifactName: Boolean
+        #Packaging: CODEPIPELINE
+        #Path: String
+        Type: CODEPIPELINE
+      #BadgeEnabled: Boolean
+      #BuildBatchConfig:
+        #ProjectBuildBatchConfig
+      #Cache:
+        #ProjectCache
+      ConcurrentBuildLimit: 5
+      Description: This is a test
+      #EncryptionKey: String
+      Environment:
+        #Certificate: String
+        ComputeType: BUILD_GENERAL1_MEDIUM
+        #EnvironmentVariables:
+          #- EnvironmentVariable
+        Image: al2/standard/3.0
+        ImagePullCredentialsType: CODEBUILD
+        #PrivilegedMode: Boolean
+        #RegistryCredential:
+          #RegistryCredential
+        Type: LINUX_CONTAINER
+      #FileSystemLocations:
+        #- ProjectFileSystemLocation
+      #LogsConfig:
+        #LogsConfig
+      Name: theBuildProject
+      QueuedTimeoutInMinutes: 10
+      ResourceAccessRole: arn:aws:iam::708508995810:role/cloudWatchLogsRole
+      #SecondaryArtifacts:
+        #- Artifacts
+      #SecondarySources:
+        #- Source
+      #SecondarySourceVersions:
+        #- ProjectSourceVersion
+      ServiceRole: arn:aws:iam::708508995810:role/cloudWatchLogsRole
+      Source:
+        #Auth:
+          #SourceAuth
+        BuildSpec: build.yaml
+        #BuildStatusConfig:
+          #BuildStatusConfig
+        #GitCloneDepth: Integer
+        #GitSubmodulesConfig:
+          #GitSubmodulesConfig
+        #InsecureSsl: Boolean
+        Location: https://git-codecommit.us-east-1.amazonaws.com/v1/repos/practice
+        #ReportBuildStatus: Boolean
+        #SourceIdentifier: String
+        Type: CODEPIPELINE
+      #SourceVersion: String
+      #Tags:
+        #- Tag
+      TimeoutInMinutes: 10
+      #Triggers:
+        #ProjectTriggers
+      #Visibility: String
+      #VpcConfig:
+        #VpcConfig
+
+  #webHooksForGithub:
+    #Type: AWS::CodePipeline::Webhook
+    #Properties:
+      #Authentication: UNAUTHENTICATED
+      #AuthenticationConfiguration:
+      #Filters:
+        #- WebhookFilterRule
+      #Name: String
+      #RegisterWithThirdParty: Boolean
+      #TargetAction: String
+      #TargetPipeline: String
+      #TargetPipelineVersion: Integer
+  #eventBridgeRule:
+    #Type: AWS::Events::Rule
+    #Properties:
+      #Description: String
+      #EventBusName: String
+      #EventPattern: Json
+      #Name: String
+      #RoleArn: String
+      #ScheduleExpression: String
+      #State: String
+      #Targets:
+        #- Target
+
+  #theCodePipeline:
+    #Type: AWS::CodePipeline::Pipeline
+    #Properties:
+      #ArtifactStore:
+        #ArtifactStore
+      #ArtifactStores:
+        #- ArtifactStoreMap
+      #DisableInboundStageTransitions:
+        #- StageTransition
+      #Name: thePipeline
+      #RestartExecutionOnUpdate: True
+      #RoleArn: arn:aws:iam::708508995810:role/service-role/AWSCodePipelineServiceRole-us-east-1-practice_pipeline
+      #Stages:
+        #- ActionTypeId:
+            #Category: Source
+            #wner: AWS
+            #Provider: CodeCommit
+            #Version: 1
+          #Configuration: Json
+          #InputArtifacts:
+            #- InputArtifact
+          #Name: The Gather
+          #Namespace: String
+          #OutputArtifacts:
+            #- OutputArtifact
+          #Region: us-east-1
+          #RoleArn: String
+          #RunOrder: 1
+        #- - ActionTypeId:
+              #Category: Build
+              #Owner: AWS
+              #Provider: CodeBuild
+              #Version: 1
+            #Configuration: Json
+            #InputArtifacts:
+            #- InputArtifact
+            #Name: The Build
+              #Namespace: String
+            #OutputArtifacts:
+            #- OutputArtifact
+            #Region: us-east-1
+            #RoleArn: String
+            #RunOrder: 2
+      #Tags:
+        #- Tag
+

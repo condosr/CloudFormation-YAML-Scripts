@@ -102,3 +102,40 @@ Resources:
         - Key: yuh
           Value: yuhyuh
       TrailName: bearCogCloudTrail
+
+  snsTechTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: TechTeam
+      Subscription:
+        - !Ref techEmailsSub
+        - !Ref scottPhoneSub
+        - !Ref kaycPhoneSub
+
+  scondoEmailsSub:
+    Type: AWS::SNS::Subscription
+    Properties:
+        Endpoint: scondo@bearcognition.com
+        Protocol: sms
+        TopicArn: !Ref snsTechTopic
+
+  #kelginEmailsSub:
+    #Type: AWS::SNS::Subscription
+    #Properties:
+     # Endpoint: scondo@bearcognition.com
+      #Protocol: sms
+      #TopicArn: !Ref snsTechTopic
+
+  techEmailsSub:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Endpoint: 12034159835
+      Protocol: sms
+      TopicArn: !Ref snsTechTopic
+
+  #techEmailsSub:
+   # Type: AWS::SNS::Subscription
+    #Properties:
+     # Endpoint: 12034159835
+      #Protocol: sms
+      #TopicArn: !Ref snsTechTopic
