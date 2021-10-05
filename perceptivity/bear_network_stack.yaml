@@ -1,94 +1,74 @@
-AWSTemplateFormatVersion: 2010-09-09
+ AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   AWS CloudFormation Sample Template VPC_with_PublicIPs_And_DNS: Sample template
   that creates a VPC with DNS and public IPs enabled. Note that you are billed
   for the AWS resources that you use when you create a stack from this template.
 Resources:
-  BearVPC:
+  BearVPC: #This is the vpc created in the network stack
     Type: 'AWS::EC2::VPC'
     Properties:
       EnableDnsSupport: 'true'
       EnableDnsHostnames: 'true'
-      CidrBlock: 172.31.0.0/16
+      CidrBlock: 172.31.0.0/16 #given cidr block
 
-  PortalTableauSubnet:
+  PortalTableauSubnet: #The subnet that we use for portal and tableau
     Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref BearVPC
       CidrBlock: 172.31.16.0/20
       AvailabilityZone: us-east-1c
 
-  Alb1Subnet:
+  Alb1Subnet: #The subnet that will be used to load balance
     Type: 'AWS::EC2::Subnet'
     Properties:
       VpcId: !Ref BearVPC
       CidrBlock: 172.31.32.0/20
       AvailabilityZone: us-east-1d
 
-  Alb2Subnet:
-    Type: 'AWS::EC2::Subnet'
+  Alb2Subnet: #The subnet used to load balance
+    Type: 'AWS::EC2::Subnet' 
     Properties:
       VpcId: !Ref BearVPC
       CidrBlock: 172.31.48.0/20
       AvailabilityZone: us-east-1e
 
-  BearVPCIG:
+  BearVPCIG: #The internet gateway for the vpc
     Type: 'AWS::EC2::InternetGateway'
 
-  BearVPCGatewayAttachment:
+  BearVPCGatewayAttachment: #The attatchment of of the Internet Gateway created above
     Type: 'AWS::EC2::VPCGatewayAttachment'
     Properties:
       VpcId: !Ref BearVPC
       InternetGatewayId: !Ref BearVPCIG
-  BearVPCRoutes:
+  BearVPCRoutes: #Routes table for the vpc
     Type: 'AWS::EC2::RouteTable'
     Properties:
       VpcId: !Ref BearVPC
 
-  PublicRoute:
+  PublicRoute: #the public route to the internet
     Type: 'AWS::EC2::Route'
     DependsOn: BearVPCGatewayAttachment
     Properties:
       RouteTableId: !Ref BearVPCRoutes
       DestinationCidrBlock: 0.0.0.0/0
       GatewayId: !Ref BearVPCIG
-  Alb1SubnetRouteTableAssociation:
+  Alb1SubnetRouteTableAssociation: #route table association 
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
       SubnetId: !Ref Alb1Subnet
       RouteTableId: !Ref BearVPCRoutes
-  Alb2SubnetRouteTableAssociation:
+  Alb2SubnetRouteTableAssociation: #route table association
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
       SubnetId: !Ref Alb2Subnet
       RouteTableId: !Ref BearVPCRoutes
-  PortalTableauSubnetRouteTableAssociation:
+  PortalTableauSubnetRouteTableAssociation: #route table association
     Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
       SubnetId: !Ref PortalTableauSubnet
       RouteTableId: !Ref BearVPCRoutes
-        #PortalTableauSubnetNetworkAclAssociation:
-        #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-        #Properties:
-        #SubnetId: !Ref PortalTableauSubnet
-        #NetworkAclId: !GetAtt
-        #- BearVPC
-        #- DefaultNetworkAcl
-        #Alb1SubnetNetworkAclAssociation:
-        #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-        #Properties:
-        #SubnetId: !Ref Alb1Subnet
-        #NetworkAclId: !GetAtt
-        #- BearVPC
-        #- DefaultNetworkAcl
-        #Alb2SubnetNetworkAclAssociation:
-        #Type: 'AWS::EC2::SubnetNetworkAclAssociation'
-        #Properties:
-        #SubnetId: !Ref Alb2Subnet
-        #NetworkAclId: !GetAtt
-        #- BearVPC
-      #- DefaultNetworkAcl
-  PortalSecurityGroup:
+        
+  PortalSecurityGroup: #The security group for the portal server, ingress and egress
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable HTTP ingress
@@ -157,7 +137,7 @@ Resources:
           ToPort: '1433'
           CidrIp: 207.98.168.34/32
 
-  TableauSecurityGroup:
+  TableauSecurityGroup: #the security group for the tableau server ingress, and egress
     Type: 'AWS::EC2::SecurityGroup'
     Properties:
       GroupDescription: Enable HTTP ingress
@@ -256,20 +236,20 @@ Resources:
           ToPort: '8850'
           CidrIp: 174.56.158.129/32
 
-Outputs:
-  VPCID:
+Outputs: #the outputs that will be needed for other stacks
+  VPCID: #this exports the VpcId
     Description: VPC ID
     Value: !Ref BearVPC
     Export:
       Name:
-        'Fn::Transform':
+        'Fn::Transform': #same transform as in the other stacks that takes the export or import and strips the values '/' to make it a valid import of export
           - Name: 'String'
             Parameters:
               InputString: !Sub '${AWS::StackId}-VPCID'
               Operation: Replace
               Old: "/"
               New: ""
-  PortalTableauSubnetID:
+  PortalTableauSubnetID: #this exports the portal tableau subnet id
     Description: The subnet ID to use for public web servers
     Value: !Ref PortalTableauSubnet
     Export:
@@ -281,7 +261,7 @@ Outputs:
               Operation: Replace
               Old: "/"
               New: ""
-  PortalTableauSubnetAZ:
+  PortalTableauSubnetAZ: #this exports the portal tableau subnet AZ
     Description: The AZ of the portal tableau subnet
     Value: !GetAtt PortalTableauSubnet.AvailabilityZone
     Export:
@@ -293,7 +273,7 @@ Outputs:
               Operation: Replace
               Old: "/"
               New: ""
-  Alb1SubnetID:
+  Alb1SubnetID: # this is the first loadbalancer subnet id
     Description: The subnet ID to use for public web servers
     Value: !Ref Alb1Subnet
     Export:
@@ -305,7 +285,7 @@ Outputs:
               Operation: Replace
               Old: "/"
               New: ""
-  Alb2SubnetID:
+  Alb2SubnetID: #second load balancer subnet id
     Description: The subnet ID to use for public web servers
     Value: !Ref Alb2Subnet
     Export:
@@ -317,7 +297,7 @@ Outputs:
               Operation: Replace
               Old: "/"
               New: ""
-  PortalSecurityGroupID:
+  PortalSecurityGroupID: #portal security group id
     Description: The security group ID to use for public web servers
     Value: !GetAtt
       - PortalSecurityGroup
@@ -332,13 +312,12 @@ Outputs:
               Old: "/"
               New: ""
 
-  TableauSecurityGroupID:
+  TableauSecurityGroupID: #tableau security group id
     Description: The security group ID to use for public web servers
     Value: !GetAtt
       - TableauSecurityGroup
       - GroupId
     Export:
-      #Name: !Sub 'arn:aws:cloudformation:us-east-1:708508995810:stack/lkjsdlkj-bearNetworkStack-TJL3Q47YZ2ND/d9c2ead0-1a18-11ec-810d-12311be6f10f-PortalSubnetID'
       Name: #!Sub '${AWS::StackId}-TableauSecurityGroupID'
         'Fn::Transform':
           - Name: 'String'
@@ -347,7 +326,7 @@ Outputs:
               Operation: Replace
               Old: "/"
               New: ""
-  stackName:
+  stackName: #the stack id of this stack
     Description: the name of the stack
     Value: AWS::StackId
     Export:

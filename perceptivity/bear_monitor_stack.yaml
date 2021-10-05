@@ -4,38 +4,38 @@ Description: >-
   that creates a VPC with DNS and public IPs enabled. Note that you are billed
   for the AWS resources that you use when you create a stack from this template.
 Parameters:
-  bucketStack:
+  bucketStack: #the bucketStack id
     Description: The name of the bucket stack
     Type: String
     MinLength: 1
     MaxLength: 255
-  networkStack:
+  networkStack: #the networkStack id
     Description: The name of the network stack
     Type: String
     MinLength: 1
     MaxLength: 255
 
 Resources:
-  cloudTrailRole:
+  cloudTrailRole: #the role that is necessary to write logs to an s3 bucket
     Type: AWS::IAM::Role
     Properties:
-      AssumeRolePolicyDocument:
-        {
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "s3.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole"
-            },
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "cloudtrail.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole"
+      AssumeRolePolicyDocument:                        #
+        {                                              #
+          "Version": "2012-10-17",                     #
+          "Statement": [                               #
+            {                                          #The json policy that allows permissions to s3 buckets from cloudtrail
+              "Effect": "Allow",                       #
+              "Principal": {                           #
+                "Service": "s3.amazonaws.com"          #
+              },                                       #
+              "Action": "sts:AssumeRole"               #
+            },                                         #
+            {                                          #
+              "Effect": "Allow",                       #
+              "Principal": {                           #
+                "Service": "cloudtrail.amazonaws.com"  #
+              },                                       #
+              "Action": "sts:AssumeRole"               #
             }
           ]
         }
@@ -44,11 +44,11 @@ Resources:
         - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
         - "arn:aws:iam::aws:policy/AWSCloudTrailReadOnlyAccess"
       RoleName: cloudTrailLogRole
-  cloudTrailLogGroup:
+  cloudTrailLogGroup: #The log group that keeps track of the cloud trail logs
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: cloudTrailLogGroup
-  flowLogMonitoring:
+  flowLogMonitoring: #the flowlog that monitors the tableau portal stack traffic
     Type: AWS::EC2::FlowLog
     Properties:
       LogDestination: !ImportValue
@@ -77,7 +77,7 @@ Resources:
       ResourceType: Subnet
       TrafficType: ALL
 
-  cloudTrail:
+  cloudTrail: #The cloudtrail that will track all the api calls
     Type: AWS::CloudTrail::Trail
     Properties:
       CloudWatchLogsLogGroupArn: !GetAtt

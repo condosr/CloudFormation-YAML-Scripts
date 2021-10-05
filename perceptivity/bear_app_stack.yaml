@@ -5,7 +5,7 @@ Description: >-
   for the AWS resources that you use when you create a stack from this template.
 
 Parameters:
-  networkStackName:
+  networkStackName: #The networkStack Id passed as a parameter
     Description: This is the network stack that will be passed to make EC2 instances and such
     Type: String
     MinLength: 1
@@ -14,7 +14,7 @@ Parameters:
 
 Resources:
 
-  PortalStack:
+  PortalStack: #This is one of the instances stacks
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: https://bearcog-github-code.s3.amazonaws.com/perceptivity/bear_instance_stack.yaml
