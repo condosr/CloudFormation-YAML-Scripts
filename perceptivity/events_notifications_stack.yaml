@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation stack that is used for notifcations, and eventbridge rules
+Resources:
+  practiceEventBridgeRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: This rule will test the sns topic that we made
+      EventPattern:
+        source:
+          - aws.sns
+      Name: snsPractice
+      scheduleExpression: cron(0/1 * * * ? *)
+      State: ENABLED
+      Targets:
+        - Arn: arn:aws:sns:us-east-1:708508995810:gddgd-bearMonitorStack-T1AJ56BPRM9O-snsTechTopic-1GH3465J22ER3
+          Id: ImUniqueNewYork
+          RetryPolicy:
+            MaximumEventAgeInSeconds: 60
+            MaximumRetryAttempts: 6
