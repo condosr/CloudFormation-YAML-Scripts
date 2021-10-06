@@ -69,7 +69,7 @@ Resources:
             - Name: 'String'
               Parameters:
                 InputString: !Sub
-                  - '${networkStack}-PortalSubnetID'
+                  - '${networkStack}-PortalTableauSubnetID'
                   - {bearNetworkStack: !Ref networkStack}
                 Operation: Replace
                 Old: "/"
@@ -105,18 +105,20 @@ Resources:
 
   snsTechTopic:
     Type: AWS::SNS::Topic
+    #DependsOn: scondoEmailSub
     Properties:
       DisplayName: TechTeam
-      Subscription:
-        - !Ref techEmailsSub
-        - !Ref scottPhoneSub
-        - !Ref kaycPhoneSub
+      #Subscription:
+        #- !Ref scondoEmailSub
+        #- !Ref scottPhoneSub
+        #- !Ref kaycPhoneSub
 
-  scondoEmailsSub:
+  scondoEmailSub:
+    DependsOn: snsTechTopic
     Type: AWS::SNS::Subscription
     Properties:
         Endpoint: scondo@bearcognition.com
-        Protocol: sms
+        Protocol: email
         TopicArn: !Ref snsTechTopic
 
   #kelginEmailsSub:
@@ -126,7 +128,8 @@ Resources:
       #Protocol: sms
       #TopicArn: !Ref snsTechTopic
 
-  techEmailsSub:
+  scottPhoneSub:
+    DependsOn: snsTechTopic
     Type: AWS::SNS::Subscription
     Properties:
       Endpoint: 12034159835

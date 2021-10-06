@@ -1,4 +1,4 @@
- AWSTemplateFormatVersion: 2010-09-09
+AWSTemplateFormatVersion: 2010-09-09
 Description: >-
   AWS CloudFormation Sample Template VPC_with_PublicIPs_And_DNS: Sample template
   that creates a VPC with DNS and public IPs enabled. Note that you are billed
@@ -328,7 +328,7 @@ Outputs: #the outputs that will be needed for other stacks
               New: ""
   stackName: #the stack id of this stack
     Description: the name of the stack
-    Value: AWS::StackId
+    Value: !Sub '${AWS::StackId}'
     Export:
       Name: #!Sub '${AWS::StackId}'
           'Fn::Transform':
